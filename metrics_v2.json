@@ -1,0 +1,250 @@
+{
+  "version": 2,
+  "classes": [
+    "down",
+    "go",
+    "one",
+    "three",
+    "two",
+    "cat",
+    "dog",
+    "bird",
+    "tree",
+    "house",
+    "bed",
+    "happy",
+    "stop",
+    "yes",
+    "no",
+    "on",
+    "a",
+    "and",
+    "away",
+    "can",
+    "come",
+    "for",
+    "here",
+    "in",
+    "is",
+    "it",
+    "little",
+    "look",
+    "make",
+    "me",
+    "my",
+    "not",
+    "said",
+    "see",
+    "the",
+    "to",
+    "up",
+    "we",
+    "where",
+    "you",
+    "_other_",
+    "_silence_"
+  ],
+  "n_vocab_words": 40,
+  "params": 42586,
+  "best_epoch": 14,
+  "val_best_acc": 0.9176,
+  "per_source_test_acc": {
+    "librispeech": 0.8373,
+    "speech_commands": 0.9183
+  },
+  "test_overall_acc": 0.9113,
+  "test_word_only_acc": 0.9104,
+  "test_false_accept_rate_other_silence_as_word_argmax": 0.0813,
+  "decision_rule": {
+    "form": "accept expected word e iff p(e) >= tau AND p(e) - max_{c != e} p(c) >= margin",
+    "tau": 0.3,
+    "margin": 0.0,
+    "false_accept_budget": 0.1,
+    "val_false_accept": 0.0015,
+    "val_true_accept": 0.9159,
+    "test_false_accept_all_pairs": 0.0015,
+    "test_false_accept_other_silence": 0.0018,
+    "test_true_accept": 0.9015,
+    "test_false_reject": 0.0985
+  },
+  "int8_onnx": {
+    "test_overall_acc": 0.9088,
+    "test_false_accept_all_pairs": 0.0017,
+    "test_true_accept": 0.8977
+  },
+  "per_word_test": {
+    "down": {
+      "n": 406,
+      "acc": 0.8571
+    },
+    "go": {
+      "n": 402,
+      "acc": 0.9055
+    },
+    "one": {
+      "n": 399,
+      "acc": 0.9273
+    },
+    "three": {
+      "n": 405,
+      "acc": 0.8691
+    },
+    "two": {
+      "n": 424,
+      "acc": 0.9222
+    },
+    "cat": {
+      "n": 194,
+      "acc": 0.933
+    },
+    "dog": {
+      "n": 220,
+      "acc": 0.9182
+    },
+    "bird": {
+      "n": 185,
+      "acc": 0.9135
+    },
+    "tree": {
+      "n": 193,
+      "acc": 0.8653
+    },
+    "house": {
+      "n": 191,
+      "acc": 0.9581
+    },
+    "bed": {
+      "n": 207,
+      "acc": 0.8744
+    },
+    "happy": {
+      "n": 203,
+      "acc": 0.9507
+    },
+    "stop": {
+      "n": 411,
+      "acc": 0.9732
+    },
+    "yes": {
+      "n": 419,
+      "acc": 0.9666
+    },
+    "no": {
+      "n": 405,
+      "acc": 0.916
+    },
+    "on": {
+      "n": 396,
+      "acc": 0.9343
+    },
+    "a": {
+      "n": 7,
+      "acc": 0.1429
+    },
+    "and": {
+      "n": 54,
+      "acc": 0.9259
+    },
+    "away": {
+      "n": 11,
+      "acc": 1.0
+    },
+    "can": {
+      "n": 6,
+      "acc": 0.3333
+    },
+    "come": {
+      "n": 10,
+      "acc": 1.0
+    },
+    "for": {
+      "n": 24,
+      "acc": 0.9167
+    },
+    "here": {
+      "n": 6,
+      "acc": 1.0
+    },
+    "in": {
+      "n": 70,
+      "acc": 0.8143
+    },
+    "is": {
+      "n": 27,
+      "acc": 0.8889
+    },
+    "it": {
+      "n": 37,
+      "acc": 0.7838
+    },
+    "little": {
+      "n": 6,
+      "acc": 1.0
+    },
+    "look": {
+      "n": 4,
+      "acc": 0.5
+    },
+    "make": {
+      "n": 7,
+      "acc": 1.0
+    },
+    "me": {
+      "n": 18,
+      "acc": 0.8333
+    },
+    "my": {
+      "n": 18,
+      "acc": 1.0
+    },
+    "not": {
+      "n": 33,
+      "acc": 1.0
+    },
+    "said": {
+      "n": 12,
+      "acc": 1.0
+    },
+    "see": {
+      "n": 5,
+      "acc": 0.8
+    },
+    "the": {
+      "n": 66,
+      "acc": 0.7879
+    },
+    "to": {
+      "n": 70,
+      "acc": 0.8429
+    },
+    "up": {
+      "n": 10,
+      "acc": 0.9
+    },
+    "we": {
+      "n": 19,
+      "acc": 0.2632
+    },
+    "where": {
+      "n": 8,
+      "acc": 1.0
+    },
+    "you": {
+      "n": 25,
+      "acc": 0.84
+    },
+    "_other_": {
+      "n": 500,
+      "acc": 0.868
+    },
+    "_silence_": {
+      "n": 300,
+      "acc": 1.0
+    }
+  },
+  "onnx_fp32_bytes": 170938,
+  "onnx_int8_bytes": 62151,
+  "mel_mean": -7.1277689933776855,
+  "mel_std": 5.449822902679443,
+  "validation_label": "validated on adult/teen voices, not yet on children 5-8"
+}

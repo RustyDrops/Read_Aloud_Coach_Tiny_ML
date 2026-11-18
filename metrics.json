@@ -1,0 +1,160 @@
+{
+  "classes": [
+    "down",
+    "go",
+    "one",
+    "three",
+    "two",
+    "cat",
+    "dog",
+    "bird",
+    "tree",
+    "house",
+    "bed",
+    "happy",
+    "stop",
+    "yes",
+    "no",
+    "on",
+    "and",
+    "for",
+    "in",
+    "is",
+    "it",
+    "my",
+    "not",
+    "the",
+    "to",
+    "you",
+    "_other_",
+    "_silence_"
+  ],
+  "params": 40780,
+  "per_source_test_acc": {
+    "librispeech": 0.6513,
+    "speech_commands": 0.8299
+  },
+  "val_best": 0.8295,
+  "test_overall_acc": 0.8253,
+  "test_word_only_acc": 0.8271,
+  "test_false_accept_rate_other_silence_as_word": 0.1837,
+  "per_word_test": {
+    "down": {
+      "n": 406,
+      "acc": 0.7562
+    },
+    "go": {
+      "n": 402,
+      "acc": 0.6592
+    },
+    "one": {
+      "n": 399,
+      "acc": 0.9123
+    },
+    "three": {
+      "n": 405,
+      "acc": 0.6543
+    },
+    "two": {
+      "n": 424,
+      "acc": 0.8656
+    },
+    "cat": {
+      "n": 194,
+      "acc": 0.8402
+    },
+    "dog": {
+      "n": 220,
+      "acc": 0.8318
+    },
+    "bird": {
+      "n": 185,
+      "acc": 0.8757
+    },
+    "tree": {
+      "n": 193,
+      "acc": 0.8238
+    },
+    "house": {
+      "n": 191,
+      "acc": 0.9372
+    },
+    "bed": {
+      "n": 207,
+      "acc": 0.8068
+    },
+    "happy": {
+      "n": 203,
+      "acc": 0.9212
+    },
+    "stop": {
+      "n": 411,
+      "acc": 0.9562
+    },
+    "yes": {
+      "n": 419,
+      "acc": 0.9332
+    },
+    "no": {
+      "n": 405,
+      "acc": 0.7481
+    },
+    "on": {
+      "n": 396,
+      "acc": 0.9015
+    },
+    "and": {
+      "n": 27,
+      "acc": 0.7778
+    },
+    "for": {
+      "n": 9,
+      "acc": 0.3333
+    },
+    "in": {
+      "n": 14,
+      "acc": 0.3571
+    },
+    "is": {
+      "n": 8,
+      "acc": 0.625
+    },
+    "it": {
+      "n": 11,
+      "acc": 0.6364
+    },
+    "my": {
+      "n": 7,
+      "acc": 0.2857
+    },
+    "not": {
+      "n": 10,
+      "acc": 0.9
+    },
+    "the": {
+      "n": 33,
+      "acc": 0.697
+    },
+    "to": {
+      "n": 28,
+      "acc": 0.8214
+    },
+    "you": {
+      "n": 5,
+      "acc": 0.2
+    },
+    "_other_": {
+      "n": 500,
+      "acc": 0.702
+    },
+    "_silence_": {
+      "n": 300,
+      "acc": 1.0
+    }
+  },
+  "train_seconds": 2918.0,
+  "onnx_fp32_bytes": 163709,
+  "onnx_int8_bytes": 60234,
+  "mel_mean": -6.816312789916992,
+  "mel_std": 5.364842414855957
+}
