@@ -1,0 +1,17 @@
+{
+ "TA_v2_on_warped": 0.4724,
+ "FA_v2_on_warped": 0.0048,
+ "TA_warped_plus_S1": 0.4849,
+ "FA_warped_plus_S1": 0.0059,
+ "argmax_v2_on_warped": 0.5176,
+ "corrected_argmax_plus_S1": 0.5302,
+ "s2_corrected": 3,
+ "s2_broke": 0,
+ "argmax_warped_plus_S1_S2": 0.5251,
+ "reference_unwarped_v2": {
+  "argmax": 0.4497,
+  "true_accept": 0.3894,
+  "false_accept": 0.0054
+ },
+ "note": "EXPLORATORY assembly on dev: View3 alpha=0.87 warp -> frozen v2 -> S1 (gated) -> S2. S1/S2 trained on unwarped-input v2 probs: distribution-shifted diagnostic, not a gate, not a candidate."
+}

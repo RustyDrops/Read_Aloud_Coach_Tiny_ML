@@ -1,0 +1,47 @@
+{
+ "n_mined_a_clips": 508,
+ "n_total_a_clips_incl_pool": 588,
+ "n_a_speakers": 214,
+ "n_negative_clips": 11455,
+ "n_sc_aux_negatives": 5702,
+ "negatives_note": "s3b matched-extraction negatives: LS pool non-a words (same pipeline as positives) + SC on/bird/go aux",
+ "training_rows_with_warped_copies": 24086,
+ "holdout_auc": 0.9333,
+ "threshold_frozen_on_adult_holdout": 0.9250000000000005,
+ "holdout_tpr_at_threshold": 0.4181,
+ "holdout_fpr_at_threshold": 0.0165,
+ "child_dev_headroom": {
+  "n_a_clips": 49,
+  "n_non_a_clips": 349,
+  "verifier_true_accept_a_at_frozen_thr": 0.0,
+  "verifier_false_accept_a_on_non_a": 0.0,
+  "verifier_auc_a_vs_rest_dev": 0.5746,
+  "v2_true_accept_a_reference": 0.0,
+  "note": "Development diagnostic on the C4 dev set (not the spent exam). Threshold was frozen on adult holdout before this scoring."
+ },
+ "dev_operating_curve_DIAGNOSTIC_ONLY": {
+  "dev_FA_0.01": {
+   "thr": 0.0,
+   "TA_a": 0.0
+  },
+  "dev_FA_0.02": {
+   "thr": 0.0,
+   "TA_a": 0.0
+  },
+  "dev_FA_0.05": {
+   "thr": 0.0,
+   "TA_a": 0.0612
+  },
+  "dev_FA_0.1": {
+   "thr": 0.0,
+   "TA_a": 0.1633
+  },
+  "dev_FA_0.2": {
+   "thr": 0.0,
+   "TA_a": 0.2245
+  },
+  "median_verifier_prob_true_a": 0.0,
+  "median_verifier_prob_non_a": 0.0,
+  "p90_verifier_prob_true_a": 0.0
+ }
+}

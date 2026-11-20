@@ -1,0 +1,20 @@
+{
+ "n_mined_a_clips": 508,
+ "n_total_a_clips_incl_pool": 588,
+ "n_a_speakers": 214,
+ "n_negative_clips": 8702,
+ "training_rows_with_warped_copies": 18580,
+ "holdout_auc": 1.0,
+ "threshold_frozen_on_adult_holdout": 0.3,
+ "holdout_tpr_at_threshold": 1.0,
+ "holdout_fpr_at_threshold": 0.0031,
+ "child_dev_headroom": {
+  "n_a_clips": 49,
+  "n_non_a_clips": 349,
+  "verifier_true_accept_a_at_frozen_thr": 0.0,
+  "verifier_false_accept_a_on_non_a": 0.0,
+  "verifier_auc_a_vs_rest_dev": 0.4915,
+  "v2_true_accept_a_reference": 0.0,
+  "note": "Development diagnostic on the C4 dev set (not the spent exam). Threshold was frozen on adult holdout before this scoring."
+ }
+}

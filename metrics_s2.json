@@ -1,0 +1,23 @@
+{
+ "n_train_clips_three_tree": 7626,
+ "n_three": 3792,
+ "n_tree": 3834,
+ "holdout_auc": 0.9664,
+ "holdout_acc_at_0.5": 0.9005,
+ "child_dev_DEVELOPMENT": {
+  "tag": "child_dev",
+  "n_triggered_true_three_tree": 26,
+  "corrected": 2,
+  "broke": 0,
+  "v2_argmax_on_triggered": 0.6923,
+  "s2_argmax_on_triggered": 0.7692
+ },
+ "adult_val": {
+  "tag": "adult_val_both_directions",
+  "n_triggered_true_three_tree": 419,
+  "corrected": 11,
+  "broke": 1,
+  "v2_argmax_on_triggered": 0.8926,
+  "s2_argmax_on_triggered": 0.9165
+ }
+}

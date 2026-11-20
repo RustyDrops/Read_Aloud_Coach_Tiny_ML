@@ -1,0 +1,277 @@
+{
+ "n_dev": 398,
+ "argmax_acc": 0.4497,
+ "true_accept": 0.3894,
+ "false_rejections": 243,
+ "false_rejection_rescue": {
+  "pred_is_true_but_quiet": 24,
+  "pred_is_other": 50,
+  "pred_is_silence": 1,
+  "pred_is_wrong_word": 168,
+  "rank_of_true_word": {
+   "rank_1": 24,
+   "rank_2": 48,
+   "rank_3": 23,
+   "rank_4": 16,
+   "rank_5": 13
+  },
+  "rank_gt5": 119,
+  "p_true_quantiles": {
+   "p10": 0.0027,
+   "p25": 0.0099,
+   "median": 0.0475,
+   "p75": 0.1424,
+   "p90": 0.2414
+  },
+  "oracle_true_accept_rescue_rank_le2": 0.5704,
+  "oracle_true_accept_rescue_rank_le3": 0.6281,
+  "oracle_true_accept_rescue_pred_true_only": 0.4497,
+  "oracle_argmax_promote_rank2_count": 48,
+  "oracle_argmax_if_rank2_promoted": 0.5704,
+  "by_word": {
+   "a": {
+    "n": 49,
+    "fr": 49,
+    "fr_pred_other": 1,
+    "fr_rank_le2": 0,
+    "fr_rank_le3": 0
+   },
+   "and": {
+    "n": 5,
+    "fr": 5,
+    "fr_pred_other": 1,
+    "fr_rank_le2": 0,
+    "fr_rank_le3": 0
+   },
+   "bird": {
+    "n": 1,
+    "fr": 1,
+    "fr_pred_other": 0,
+    "fr_rank_le2": 1,
+    "fr_rank_le3": 1
+   },
+   "dog": {
+    "n": 3,
+    "fr": 2,
+    "fr_pred_other": 2,
+    "fr_rank_le2": 1,
+    "fr_rank_le3": 1
+   },
+   "no": {
+    "n": 146,
+    "fr": 87,
+    "fr_pred_other": 20,
+    "fr_rank_le2": 29,
+    "fr_rank_le3": 36
+   },
+   "one": {
+    "n": 59,
+    "fr": 22,
+    "fr_pred_other": 14,
+    "fr_rank_le2": 13,
+    "fr_rank_le3": 17
+   },
+   "three": {
+    "n": 64,
+    "fr": 39,
+    "fr_pred_other": 3,
+    "fr_rank_le2": 16,
+    "fr_rank_le3": 21
+   },
+   "tree": {
+    "n": 1,
+    "fr": 1,
+    "fr_pred_other": 1,
+    "fr_rank_le2": 0,
+    "fr_rank_le3": 0
+   },
+   "two": {
+    "n": 59,
+    "fr": 27,
+    "fr_pred_other": 5,
+    "fr_rank_le2": 10,
+    "fr_rank_le3": 14
+   },
+   "yes": {
+    "n": 11,
+    "fr": 10,
+    "fr_pred_other": 3,
+    "fr_rank_le2": 2,
+    "fr_rank_le3": 5
+   }
+  }
+ },
+ "pair_headroom": {
+  "a_on_from_a": {
+   "n_true": 49,
+   "pred_is_pair": 13,
+   "true_rank_le2": 0,
+   "top2_is_exactly_pair": 0,
+   "pair_in_top2": 19,
+   "oracle_gain_clips": 0
+  },
+  "on_a_from_on": {
+   "n_true": 0,
+   "pred_is_pair": 0,
+   "true_rank_le2": 0,
+   "top2_is_exactly_pair": 0,
+   "pair_in_top2": 0,
+   "oracle_gain_clips": 0
+  },
+  "three_tree_from_three": {
+   "n_true": 64,
+   "pred_is_pair": 13,
+   "true_rank_le2": 41,
+   "top2_is_exactly_pair": 26,
+   "pair_in_top2": 33,
+   "oracle_gain_clips": 8
+  },
+  "tree_three_from_tree": {
+   "n_true": 1,
+   "pred_is_pair": 0,
+   "true_rank_le2": 0,
+   "top2_is_exactly_pair": 0,
+   "pair_in_top2": 1,
+   "oracle_gain_clips": 0
+  }
+ },
+ "a_confusion_row": {
+  "on": 13,
+  "bird": 11,
+  "go": 7,
+  "tree": 3,
+  "two": 3,
+  "bed": 3,
+  "house": 2,
+  "little": 2,
+  "cat": 1,
+  "_other_": 1,
+  "is": 1,
+  "the": 1,
+  "happy": 1
+ },
+ "a_rank": {
+  "rank_le2": 0,
+  "rank_le3": 0,
+  "n": 49,
+  "p_true_median": 0.0042
+ },
+ "f0_by_word": {
+  "a": {
+   "n": 49,
+   "f0_median_hz": 258.1,
+   "voiced_s_median": 0.42
+  },
+  "and": {
+   "n": 5,
+   "f0_median_hz": 246.2,
+   "voiced_s_median": 0.7
+  },
+  "bird": {
+   "n": 1,
+   "f0_median_hz": 233.6,
+   "voiced_s_median": 0.38
+  },
+  "dog": {
+   "n": 3,
+   "f0_median_hz": 252.0,
+   "voiced_s_median": 0.56
+  },
+  "no": {
+   "n": 146,
+   "f0_median_hz": 250.0,
+   "voiced_s_median": 0.33
+  },
+  "one": {
+   "n": 59,
+   "f0_median_hz": 254.0,
+   "voiced_s_median": 0.5
+  },
+  "three": {
+   "n": 64,
+   "f0_median_hz": 265.6,
+   "voiced_s_median": 0.4
+  },
+  "tree": {
+   "n": 1,
+   "f0_median_hz": 280.7,
+   "voiced_s_median": 0.65
+  },
+  "two": {
+   "n": 59,
+   "f0_median_hz": 258.1,
+   "voiced_s_median": 0.37
+  },
+  "yes": {
+   "n": 11,
+   "f0_median_hz": 271.2,
+   "voiced_s_median": 0.39
+  }
+ },
+ "probe_a_vs_rest": {
+  "pitch_formant_duration": {
+   "fold0": {
+    "auc": 0.841,
+    "n_test": 252,
+    "n_a_test": 28
+   },
+   "fold1": {
+    "auc": 0.863,
+    "n_test": 146,
+    "n_a_test": 21
+   },
+   "mean_auc": 0.852
+  },
+  "mel_mean_only": {
+   "fold0": {
+    "auc": 0.91,
+    "n_test": 252,
+    "n_a_test": 28
+   },
+   "fold1": {
+    "auc": 0.863,
+    "n_test": 146,
+    "n_a_test": 21
+   },
+   "mean_auc": 0.887
+  },
+  "combined": {
+   "fold0": {
+    "auc": 0.892,
+    "n_test": 252,
+    "n_a_test": 28
+   },
+   "fold1": {
+    "auc": 0.831,
+    "n_test": 146,
+    "n_a_test": 21
+   },
+   "mean_auc": 0.861
+  }
+ },
+ "probe_note": "Diagnostic only: fitted on dev, child-disjoint folds within dev; NOT a gate, NOT a candidate.",
+ "adult_diagnostics": {
+  "v6_vtlp_warped_adult_probe": {
+   "n": 1000,
+   "argmax_acc": 0.826,
+   "note": "alpha=1.25 VTLP-warped adults built for v6; G1 recorded v2=0.826 here",
+   "false_rejections": 156,
+   "fr_rank_le2_frac_of_fr": 0.6154
+  },
+  "v3_test_mapped_to_v2_classes": {
+   "n": 7775,
+   "argmax_acc_v2_on_it": 0.6796,
+   "false_rejections": 2333,
+   "note": "DIAGNOSTIC ONLY: v3's adult test clips relabelled by class name; v3 mel normalisation constants not reused, v2's applied; not an exam."
+  }
+ },
+ "adult_reference_from_metrics_v2": {
+  "val_acc": 0.9176,
+  "val_true_accept": 0.9159,
+  "val_false_accept": 0.0015,
+  "a_adult_test": {
+   "n": 7,
+   "acc": 0.1429
+  }
+ }
+}

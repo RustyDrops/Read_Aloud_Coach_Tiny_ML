@@ -60,6 +60,86 @@ from frozen speaker-disjoint caches: 37,769 train / 6,046 validation /
 6,413 test clips. Full per-word numbers: `metrics_v2.json` (v1:
 `metrics.json`).
 
+## Phase 1 views + specialists — DEVELOPMENT (child DEV numbers only, not a release)
+
+> **Development update, 2026-11-19. v2 (above) remains the keeper and
+> the only released model in this repo.** Everything in this section is
+> development work measured on the JIBO Kids **DEV** split only (398
+> clips / 53 children, disjoint by child from the spent C4/G1 exam).
+> These are **not** release numbers, there is no v7, and no new keeper
+> is claimed. Full record: `PLAN-VIEWS-SPECIALISTS.md` (Phase 0 +
+> Phase 1) and `PROVENANCE.md`.
+
+Phase 1 tested the Write It Right pattern — several *views* of the
+same clip plus tiny *specialist* double-checkers — against v2's
+measured child-speech failure (dev argmax 0.4497, verifier
+true-accept 0.3894, false-accept 0.0054; the failure mode is false
+*rejection* of child clips, not false accepts).
+
+- **View 3 — child-normalized mel (the big win, zero training).**
+  Warp the *input* toward the adult register v2 was trained on
+  (inverse VTLP, alpha = 0.87) and score the **frozen v2 model,
+  unchanged** (`view3_normalized.py`, `metrics_view3.json`):
+  child dev argmax **0.4497 -> 0.5226**, true-accept
+  **0.3894 -> 0.4749**. The largest child gain found so far is an
+  input transform, not a trained model.
+- **S1 — child-register rescue verifier** (`train_specialists.py`,
+  `s1_model.npz`, 5.7 KB; `metrics_s1.json`). A small logistic
+  verifier consulted when v2 rejects a clip the pitch view flags as
+  child-register. Child dev, gated: true-accept **+3.0 pts**
+  (0.3894 -> 0.4196) — real, but only ~1/6 of its +18.1 pt oracle
+  headroom, because its evidence overlaps v2's own. Cost:
+  false-accept **0.0054 -> 0.0064** (top edge of v2's recorded band).
+  Disclosed blemish: the raw F0 >= 220 Hz gate fires on **25.0%** of
+  adult LibriSpeech clips (adult women reach 220 Hz); the system
+  stayed safe because the verifier itself is strict (adult-val
+  false-accept moved only 0.0016 -> 0.0019 even ungated). A product
+  version would need a learned register probe, not this raw gate.
+- **S2 — three/tree pair verifier** (`s2_model.npz`, 2.8 KB;
+  `metrics_s2.json`). Consulted when v2's top-2 is exactly
+  {three, tree}. Child dev: 26 triggered 'three' clips, corrected 2,
+  broke 0. Adult validation (both directions measurable): 419
+  triggered, corrected 11, broke 1 (0.893 -> 0.917 on the triggered
+  subset). Small, clean, positive — the tree side cannot be measured
+  on child dev (n=1), as recorded in the plan.
+- **Exploratory assembly (diagnostic only, NOT a candidate).**
+  View 3 warp -> v2 -> S1 -> S2 on dev: true-accept **0.4849**,
+  argmax **0.5302**, false-accept **0.0059**
+  (`metrics_assembly_dev.json`). S1/S2 were trained on
+  unwarped-input probabilities, so this is distribution-shifted and
+  shows only that the pieces compose.
+- **The 'a' problem — root cause found, bolt-on fix rejected.**
+  'a' scored 0.000 on every measured child set. The cause was a
+  pipeline bug, not the corpus: the mining pipeline's **0.04 s
+  minimum-span filter** discarded the word wholesale (a schwa aligns
+  to 1-2 CTC frames). With the filter fixed, mining LibriSpeech
+  train-clean-100 produced **960 new 'a' clips from 221 speakers**
+  (`mine_a_tc100.py`, `metrics_mine_a.json`; total 'a' inventory
+  1,040 vs the 64 originals v2 trained on). But a bolt-on
+  target-conditioned 'a' verifier trained on adults does **not**
+  transfer to children (dev AUC 0.5746, child 'a' true-accept still
+  0.000; `metrics_s3.json`, `metrics_s3b.json`) — that design is a
+  dead end. The mined data must enter through a future whole-model
+  retrain instead.
+
+**Standing statement:** a v7 cannot be crowned — on children, at
+all — without a **fresh child exam**. The C4/G1 child exam is spent;
+the only fully clean new exam currently identified is the Arizona
+Child Acoustic Database, which is consent-cleared but blocked on a
+free TalkBank signup to download. Until a clean exam exists, this
+line can be developed and ranked, but not honestly released as a
+child-validated improvement. **v2 remains the keeper.**
+
+Phase 1 files: `view3_normalized.py`, `train_specialists.py`,
+`assembly_dev.py`, `mine_a_tc100.py`, `s1_model.npz`,
+`s2_model.npz`, `metrics_view3.json`, `metrics_s1.json`,
+`metrics_s2.json`, `metrics_s3.json`, `metrics_s3b.json`,
+`metrics_mine_a.json`, `metrics_assembly_dev.json`,
+`child_eval/phase0_diagnostics.py`, `child_eval/phase0_results.json`.
+No child audio, child manifests, or corpus data of any kind is
+included in this repo — child corpora are eval-only, local, and
+never redistributed.
+
 ## Vocabulary
 
 Target: a 50-word early-reader list (`vocab.py`). **Covered: 40 of 50.**

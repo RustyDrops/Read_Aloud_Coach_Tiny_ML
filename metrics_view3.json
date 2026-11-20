@@ -1,0 +1,42 @@
+{
+ "n_dev": 398,
+ "alphas": {
+  "1.00_unwarped": {
+   "tag": "unwarped",
+   "argmax_acc": 0.4497,
+   "true_accept": 0.3894,
+   "delta_argmax_vs_unwarped": 0.0,
+   "delta_true_accept_vs_unwarped": 0.0
+  },
+  "0.87": {
+   "tag": "alpha=0.87",
+   "argmax_acc": 0.5226,
+   "true_accept": 0.4749,
+   "delta_argmax_vs_unwarped": 0.0729,
+   "delta_true_accept_vs_unwarped": 0.0855
+  },
+  "0.80": {
+   "tag": "alpha=0.8",
+   "argmax_acc": 0.505,
+   "true_accept": 0.4573,
+   "delta_argmax_vs_unwarped": 0.0553,
+   "delta_true_accept_vs_unwarped": 0.0679
+  },
+  "0.74": {
+   "tag": "alpha=0.74",
+   "argmax_acc": 0.5126,
+   "true_accept": 0.4648,
+   "delta_argmax_vs_unwarped": 0.0629,
+   "delta_true_accept_vs_unwarped": 0.0754
+  }
+ },
+ "gate_fire_rate_dev_f0_ge_220": 0.8769,
+ "adult_gate_audit": {
+  "n_ls_val_test_speaker_clips": 1245,
+  "f0_median_hz_p50": 166.7,
+  "f0_median_hz_p95": 430.2,
+  "fire_rate_f0_ge_220": 0.2498,
+  "fire_rate_f0_ge_200": 0.3349,
+  "note": "LibriSpeech adult readers, val/test speakers only. SC speakers are adults/teens of similar register; JIBO dev fire rate is the child-side counterpart."
+ }
+}

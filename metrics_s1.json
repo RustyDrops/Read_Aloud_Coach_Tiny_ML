@@ -1,0 +1,127 @@
+{
+ "threshold_frozen_on_holdout": 0.4250000000000001,
+ "holdout_trigger_pairs": 6629,
+ "holdout_rescue_rate_of_triggered_positives": 0.205,
+ "holdout_false_accept_rate_of_triggered_negatives": 0.0177,
+ "holdout_auc_all_pairs": 0.9811,
+ "n_train_pairs": 120145,
+ "n_holdout_pairs": 13352,
+ "feature_dim": 132,
+ "child_dev_DEVELOPMENT_numbers": {
+  "gated": {
+   "true_accept": 0.4196,
+   "false_accept_all_pairs": 0.0064,
+   "v2_true_accept": 0.3894,
+   "v2_false_accept_all_pairs": 0.0054,
+   "delta_true_accept": 0.0302,
+   "delta_false_accept": 0.001,
+   "argmax_acc": 0.4497,
+   "verifier_corrected_argmax": 0.4623,
+   "n_rescued_true": 12,
+   "tag": "child_dev_gated_f0>=220"
+  },
+  "ungated": {
+   "true_accept": 0.4246,
+   "false_accept_all_pairs": 0.0066,
+   "v2_true_accept": 0.3894,
+   "v2_false_accept_all_pairs": 0.0054,
+   "delta_true_accept": 0.0352,
+   "delta_false_accept": 0.0012,
+   "argmax_acc": 0.4497,
+   "verifier_corrected_argmax": 0.4673,
+   "n_rescued_true": 14,
+   "tag": "child_dev_ungated"
+  }
+ },
+ "child_dev_per_word_true_accept_gated": {
+  "a": {
+   "n": 49,
+   "v2": 0.0,
+   "s1": 0.0
+  },
+  "and": {
+   "n": 5,
+   "v2": 0.0,
+   "s1": 0.0
+  },
+  "bird": {
+   "n": 1,
+   "v2": 0.0,
+   "s1": 1.0
+  },
+  "dog": {
+   "n": 3,
+   "v2": 0.3333,
+   "s1": 0.3333
+  },
+  "no": {
+   "n": 146,
+   "v2": 0.4041,
+   "s1": 0.4178
+  },
+  "one": {
+   "n": 59,
+   "v2": 0.6271,
+   "s1": 0.6271
+  },
+  "three": {
+   "n": 64,
+   "v2": 0.3906,
+   "s1": 0.5312
+  },
+  "tree": {
+   "n": 1,
+   "v2": 0.0,
+   "s1": 0.0
+  },
+  "two": {
+   "n": 59,
+   "v2": 0.5424,
+   "s1": 0.5424
+  },
+  "yes": {
+   "n": 11,
+   "v2": 0.0909,
+   "s1": 0.0909
+  }
+ },
+ "adult_val": {
+  "ungated_worst_case": {
+   "true_accept": 0.923,
+   "false_accept_all_pairs": 0.0019,
+   "v2_true_accept": 0.9114,
+   "v2_false_accept_all_pairs": 0.0016,
+   "delta_true_accept": 0.0116,
+   "delta_false_accept": 0.0003,
+   "argmax_acc": 0.9127,
+   "verifier_corrected_argmax": 0.9213,
+   "n_rescued_true": 61,
+   "tag": "adult_val_ungated_worst_case"
+  },
+  "note": "Val cache has no waveforms, so the F0 gate cannot be applied row-wise; ungated is the absolute worst case. Measured adult LS gate fire rate at 220 Hz is in metrics_view3.json (adult_gate_audit). Gated estimate below scales the added accepts by that fire rate.",
+  "fire_rate_adjusted_estimate": {
+   "true_accept": 0.9143,
+   "false_accept_all_pairs": 0.0017,
+   "v2_true_accept": 0.9114,
+   "v2_false_accept_all_pairs": 0.0016,
+   "delta_true_accept": 0.0029,
+   "delta_false_accept": 0.0001,
+   "argmax_acc": 0.9127,
+   "verifier_corrected_argmax": 0.9213,
+   "n_rescued_true": 61,
+   "tag": "adult_val_ungated_worst_case"
+  }
+ },
+ "warped_adult_probe": {
+  "true_accept": 0.851,
+  "false_accept_all_pairs": 0.0036,
+  "v2_true_accept": 0.819,
+  "v2_false_accept_all_pairs": 0.0033,
+  "delta_true_accept": 0.032,
+  "delta_false_accept": 0.0004,
+  "argmax_acc": 0.826,
+  "verifier_corrected_argmax": 0.855,
+  "n_rescued_true": 32,
+  "tag": "warped_adult_probe_ungated"
+ }
+}
