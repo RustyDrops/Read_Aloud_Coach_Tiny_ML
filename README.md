@@ -1,6 +1,6 @@
 # Read-Aloud Coach — Tiny ML
 
-![Read-Aloud Coach — read a word out loud, it checks the reading](promo/read-aloud-promo.png)
+![Read-Aloud Coach — read a word out loud, it checks the reading](promo/read-aloud-promo-v3.png)
 
 A tiny known-page word verifier for early readers (62 KB, runs fully
 offline): the child reads a word from a known page aloud, and the model
@@ -59,6 +59,37 @@ on a Colab T4 GPU (16 epochs, ~72 s of GPU time, 0.14 compute units)
 from frozen speaker-disjoint caches: 37,769 train / 6,046 validation /
 6,413 test clips. Full per-word numbers: `metrics_v2.json` (v1:
 `metrics.json`).
+
+## How this compares
+
+The standard tiny-model reference for this task family is keyword
+spotting on Google Speech Commands:
+
+- **MLPerf Tiny** (the industry TinyML benchmark suite) uses a
+  DS-CNN with 38.6k parameters as its keyword-spotting reference,
+  sets a **90% top-1 quality target**, and measured **92.2%** for
+  that reference model. (Banbury et al., "MLPerf Tiny Benchmark,"
+  NeurIPS Datasets & Benchmarks 2021 —
+  https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/da4fb5c6e93e74d3df8527599fa62642-Paper-round1.pdf)
+- The original **DS-CNN paper** (Zhang et al. 2017, "Hello Edge:
+  Keyword Spotting on Microcontrollers," arXiv:1711.07128 —
+  https://arxiv.org/pdf/1711.07128v2) reached **95.4%** on Speech
+  Commands keyword spotting.
+
+Read-Aloud Coach v2 scores **91.1%** — inside that tiny-model
+range — but on a harder task than 12 isolated keywords: **40
+target words**, mixing isolated-word recordings with words cut
+from continuous read speech (LibriSpeech), scored with a
+false-accept-tuned decision rule (rule false-accept 0.18% at
+90.2% true-accept on the held-out test). Same size class as the
+references: 42,586 parameters, 62 KB int8.
+
+And the standing caveat, unsoftened: those benchmarks are
+adult-voice benchmarks too, and this model is **not validated on
+children 5–8** — the actual target users. The comparison says
+the tiny-model engineering is in the expected range; it says
+nothing about child accuracy, which remains unproven (see
+"Validation status" at the top and "Honest limits" below).
 
 ## Phase 1 views + specialists — DEVELOPMENT (child DEV numbers only, not a release)
 
@@ -211,7 +242,34 @@ record: `PROVENANCE.md`.
   `model_v2.onnx` (171 KB) is not included; it is available on
   request.
 
-## Run it (Python)
+## Use it yourself
+
+> **Warning, repeated on purpose: validated on adult/teen voices,
+> NOT yet on children 5–8.** Use it as a supervised prototype —
+> verdicts are hints for a supervising adult, not grades — and
+> expect child accuracy to differ from the numbers above.
+
+You need three files from this repo, kept together (the script
+looks for the other two next to itself, or one directory up):
+
+- `predict.py` — the verifier
+- `model_v2_int8.onnx` — the shipped model (62 KB, int8; this is
+  the model `predict.py` loads). The fp32 `model_v2.onnx`
+  (171 KB) is **not** in this repo; it is available on request
+  and scores essentially the same (91.1% vs 90.9% overall).
+- `metrics_v2.json` — supplies the 42-class list (the 40 covered
+  words + `_other_` + `_silence_`) and the log-mel normalisation
+  statistics the model expects.
+
+Install the Python dependencies (Python 3):
+
+```bash
+pip install numpy soundfile torch torchaudio onnxruntime
+```
+
+Run the verifier with a 1-second (or shorter — it is trimmed /
+padded) **16 kHz mono WAV** of one spoken word, plus the word
+the page asked for:
 
 ```bash
 python3 predict.py <clip.wav> <expected_word>
@@ -231,3 +289,31 @@ predicted: cat (1.00)
 expected 'dog' probability: 0.00
 verdict: NOT THIS WORD (heard 'cat')
 ```
+
+### What the verdicts mean
+
+The verifier applies the decision rule tuned on validation only
+(τ = 0.30, margin = 0.0):
+
+```
+accept word e  iff  p(e) ≥ 0.30  and  p(e) − max_{c ≠ e} p(c) ≥ 0.0
+```
+
+- **READ** — the clip passed the rule for the expected word: the
+  model is confident this word was read as written.
+- **NOT THIS WORD (heard 'x')** — the model's top prediction is a
+  *different* covered vocabulary word, named in the verdict.
+- **STUMBLED** — the model could not confirm the expected word:
+  the top prediction was `_other_` / `_silence_`, or the expected
+  word led but below the τ = 0.30 confidence threshold. Treat it
+  as "not confirmed — try again," not as proof of a misreading:
+  with this rule about 1 in 10 correctly read words is rejected
+  (true-accept 90.2% on the adult/teen test set).
+
+To use the model without `predict.py`, load
+`model_v2_int8.onnx` in any ONNX runtime: feed a 40×63 log-mel
+spectrogram (16 kHz, n_fft 512, hop 256, 40 mel bands, log,
+normalised with the `mel_mean` / `mel_std` in `metrics_v2.json`)
+as input `mel`, and map the 42 logits through the class list in
+the same file. Apply the τ = 0.30 rule above if you want the
+verifier behaviour rather than a plain argmax.
