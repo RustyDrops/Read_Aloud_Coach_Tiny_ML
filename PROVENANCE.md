@@ -965,3 +965,538 @@ target-conditioned 'a' verifier does NOT transfer adult→child
 'a' must be fixed inside a future whole-model retrain. v2 remains
 the keeper; a v7 still needs a fresh child exam (ACAD — Rusty's
 TalkBank signup) before any child keeper verdict. Nothing published.
+
+---
+
+# Release note — Phase 1 development push (2026-11-19)
+
+- **Repo:** RustyDrops/Read_Aloud_Coach_Tiny_ML (public), branch `main`.
+- **Commit:** `411203102ef9f94b15768cf6c39cf33bc204b0f1` — "Read-Aloud Phase 1 (dev): View 3 input-warping +8.6 child true-accept on dev; v2 remains keeper", layered on the v2 release commit `2d81c737ddb5aa53689eb58b344d192f6353eed7`. Pushed at Rusty's instruction ("push the winners").
+- **Nature of the push:** DEVELOPMENT update only. v2 remains the keeper and the only released model; the README's new Phase 1 section is labeled "DEVELOPMENT (child DEV numbers only, not a release)" and states plainly that no v7 exists, no new keeper is claimed, and a v7 cannot be crowned without a fresh child exam.
+- **Contents (18 files, staged in `release_phase1/`):** README.md (v2 release content intact + the new labeled Phase 1 section), PLAN-VIEWS-SPECIALISTS.md (full), PROVENANCE.md (full local copy as of the push), view3_normalized.py, train_specialists.py, assembly_dev.py, mine_a_tc100.py, s1_model.npz (5,682 B; sha256 7f4e4783…), s2_model.npz, metrics_view3.json, metrics_s1.json, metrics_s2.json, metrics_s3.json, metrics_s3b.json, metrics_mine_a.json, metrics_assembly_dev.json, child_eval/phase0_diagnostics.py, child_eval/phase0_results.json.
+- **Verification (read-back):** newest commit matches; all 18 pushed files' Git blob SHAs match local exactly (incl. s1_model.npz and metrics_s1.json); all pre-existing v2 release files (model_v2_int8.onnx, predict.py, metrics_v2.json, promo image, training scripts) confirmed still present.
+- **Exclusions:** NO child audio, NO JIBO/ACAD data or clips, no caches/logs/datasets. `child_eval/exam_manifest.json` and `child_eval/dev_manifest.json` were EXCLUDED because they contain per-clip child IDs and audio paths into the restricted JIBO release; only aggregate Phase 0 numbers (phase0_results.json) and the diagnostics code were pushed. Child corpora remain eval-only, local, never redistributed.
+
+---
+
+## Elephant-Goldfish review of the views + specialists round (2026-11-19)
+
+EG review done — full record in `~/workspace/micro-edge-pilot/EG-REVIEW-2026-11-19.md`
+(35 findings: 29 accepted, 6 accepted-with-changes, 0 rejected; Luna cost
+$0.006224; feasibility lens run by the elephant after two goldfish
+disconnects, logged in the review). Amended next round for this model:
+**v7 DEVELOPMENT candidate** — single lever = training-data repair (the
+960 mined 'a' clips + min-span fix, function-word mining on the same
+fix); View 3 (alpha 0.87, now a disclosed design constant), S1, and S2
+carried as frozen ablatable components; JIBO DEV quarantined as
+development-only; gates fully operationalized in the review §4 and
+evaluable only on a NEW child exam (ACAD — Rusty's TalkBank signup).
+No keeper verdict is possible until that exam exists. The bolt-on 'a'
+verifier design is permanently dropped.
+
+---
+
+# v7 (2026-11-19) — PRE-REGISTRATION (written BEFORE v7 mining,
+# BEFORE the v7 cache build, and BEFORE any v7 training or scoring)
+
+**DEVELOPMENT CANDIDATE — NOT A KEEPER CANDIDATE.** Standing statement,
+which every v7 artifact carries: **"v7 is a development model; no keeper
+verdict exists or is implied until a fresh child exam (ACAD or
+equivalent) is scored."** v2 remains the keeper whatever the development
+numbers below say. Nothing is published or pushed to GitHub.
+
+**Validation label (unchanged): validated on adult/teen voices, not yet
+on children 5–8.**
+
+**Design basis.** EG review 2026-11-19 §4 (Read-Aloud) + findings F4/F5,
+and PLAN-VIEWS-SPECIALISTS.md Phase 1 results. Phase 1 established:
+(i) View 3 (inverse-VTLP input warp, alpha = 0.87) is the largest child
+gain found (+7.3 argmax / +8.6 true-accept on JIBO dev, zero training);
+(ii) the bolt-on 'a' verifier (S3) is a dead end — adult-trained
+features saturate at ~0 on child clips — and the mined 'a' data must
+enter through a whole-model retrain instead (EG F10 closes the sidecar
+line permanently); (iii) the 'a' scarcity was a pipeline bug: the
+v1/v2 extractor's 0.04 s minimum-span filter silently dropped 1-2-frame
+schwas (>99% of 'a' instances), and the Phase 1 fixed-pipeline mining
+recovered 960 'a' clips from 221 LibriSpeech train-clean-100 speakers
+vs 80 in the v2 pool. This version is that retrain.
+
+## The one lever
+
+**Training-data repair only: the min-span fix in the alignment/mining
+pipeline, applied to rebuild the training pool.** Two components, both
+extracted with the Phase 1 fixed pipeline (mine_a_tc100.py lineage:
+CTC forced alignment against LibriSpeech's own human transcripts,
+wav2vec2 as locating tool only; min span 0.01 s — was 0.04; context
+pad +-0.08 s — was +-0.04; span cap 1.15 s and the span-repair rule
+unchanged from the v2 pipeline):
+
+- **Component A — the Phase 1 'a' mining, folded in as-is:**
+  mine_a_shard_*.npz, 960 'a' clips, 221 speakers, LibriSpeech
+  train-clean-100 (CC BY 4.0), from utterances the v2 pipeline never
+  processed. Record: metrics_mine_a.json.
+- **Component B — function-word mining under the same fix**
+  (mine_func_tc100.py, written for this version): LibriSpeech
+  train-clean-100 utterances NOT previously processed (not in
+  ls_done_tc.txt or mine_a_done.txt), <= 12 s, transcript containing
+  at least one of the 14 function words below; processed in a fixed
+  deterministic order (count of starved-word tokens {we, me, my, up,
+  can} descending, then duration ascending); per-word cap 4 instances
+  per utterance; time budget 45 minutes (a bounded pass, the project's
+  established pattern — v2's own tc100 top-up was bounded at
+  3,000/7,727 utterances). Kept words (function words whose short,
+  often-reduced forms the 0.04 s filter bites): and, can, for, in, is,
+  it, me, my, not, the, to, up, we, you. 'a' is excluded (Component A
+  covers it); content words (away, come, here, little, look, make,
+  said, see, where) are excluded — their spans are longer, the bug
+  barely touches them, and adding them would be data scale-up, a
+  different lever. Per-word yields and the span < 0.04 s subset (the
+  instances the old filter provably dropped) are recorded in the
+  results.
+
+**Disclosed limits of the repair.** (1) Dev-clean is NOT re-extracted:
+its 2,362 utterances were already processed by the buggy pipeline, and
+re-extraction would duplicate word occurrences already in the pool
+(same instance, different padding). Instances the bug dropped in
+dev-clean stay dropped; the repair is train-clean-100-only, exactly as
+Phase 1's 'a' lever was. (2) Component B is a bounded pass, not an
+exhaustive one; its yield is whatever the budget produces, recorded
+as measured.
+
+## Pool rebuild (merge procedure verbatim from merge_v2.py)
+
+- Pool = the consolidated v2 pool (ls_clips_v2.npz waves) + Component A
+  + Component B clips. Per-word cap 600 by seeded shuffle
+  (RandomState 123, merge_v2.py's procedure and iteration order).
+- Speaker split unchanged: LibriSpeech speaker id md5%10 — train <= 7,
+  val == 8, test == 9. **Only the train split is written**
+  (cacheV7_train.npz, same format: mel float16 / label / source).
+  Validation for checkpoint selection and all adult reporting is v2's
+  frozen cacheV2_val.npz, UNCHANGED — this keeps the adult comparison
+  same-set against v2's val numbers. New clips from val-split speakers
+  are used nowhere; clips from test-split (== 9) speakers are excluded
+  entirely, per the standing v2 discipline (Component A's 221 speakers
+  span all buckets: 178 train / 22 val / 21 test — the split rule, not
+  hand-picking, decides what trains).
+- Class list must equal classes_v2.npy (42 classes: 40 words +
+  _other_ + _silence_); the build asserts this and stops if it fails.
+  (It cannot legitimately change: A and B add only existing class
+  words, and no dropped word is in either keep set.) Speech Commands
+  side of the merge is byte-identical to v2's (cache_sc_train.npz
+  remapped as in merge_v2.py).
+- Architecture, recipe, and vocab follow v2 with NO other change:
+  same DS-CNN (42,586 params), 16 epochs, AdamW lr 2e-3, weight decay
+  1e-4, cosine T_max = 16, label smoothing 0.05, batch 256,
+  LibriSpeech oversample x2 (the train script's source-array
+  mechanism), in-training SpecAugment-style masking + time rolls,
+  mel normalization mu/sd computed on the oversampled train array by
+  the training script, checkpoint selection = best accuracy on
+  cacheV2_val. Training script: train_v7_gpu.py = train_v2_gpu.py with
+  only the train-cache filename, checkpoint dir (ckpt_v7), and done
+  marker changed.
+- **Decision rule: v2's shipped rule, frozen** — accept expected word
+  iff p(word) >= tau = 0.30, margin 0.0. NOT retuned on any set (v6
+  precedent).
+- **Compute (disclosed execution choice, not a recipe change):**
+  local CPU measures ~830 s/epoch for this recipe (train_v2.log:
+  ep 0-3 at 819-3352 s cumulative) -> ~3.7 h for 16 epochs, so training
+  runs on Google Colab T4 per the v2/v6 precedent (v2: 0.14 units;
+  v6: 0.02 units). Balance before: 576.05 units, 0 active assignments
+  (recorded 2026-11-19 evening). **Hard cap for this job: 2 units**
+  (floor = balance-before - 2.00); runtime deleted in a finally block
+  and verified with list_runtimes; checkpoints pulled and verified
+  locally before deletion (v5/v6 lessons). Export (fp32 + int8 ONNX,
+  finalize_v2.py's procedure) and ALL evaluation are local.
+
+## Carried frozen components (NOT levers; ablated, never re-tuned)
+
+- **View 3 input warp, alpha = 0.87 — a disclosed design constant**
+  (EG G4 disposition). It was selected from a 4-point sweep
+  {1.00, 0.87, 0.80, 0.74} on the same JIBO dev that reports it, so
+  dev carries selection optimism of unknown size. It is carried
+  frozen; alpha is not re-tuned here. The EG G4 nested-CV diagnostic
+  (5 child-grouped folds of JIBO dev; alpha selected inside folds
+  only, by true-accept, from the same 4-point grid; frozen v2 int8)
+  is run and reported as expectation-setting only — it is not
+  evidence for the candidate.
+- **S1 rescue verifier** (s1_model.npz; threshold 0.425 frozen on its
+  Phase 1 holdout; trigger = target in base model's top-2, not
+  rule-accepted, median F0 >= 220 Hz) and **S2 three/tree verifier**
+  (s2_model.npz; threshold 0.5; trigger = top-2 exactly {three, tree})
+  — weights, features, and thresholds frozen AS-IS from Phase 1. In
+  the v7 ladder they consume v7's probabilities and mel, exactly as
+  assembly_dev.py consumed v2's. Disclosed: S1/S2 were trained on
+  v2/v6-era probability distributions, so applying them to v7 outputs
+  carries the same distribution-shift caveat Phase 1 recorded for the
+  warp assembly. EG section 4's "learned register probe replaces S1's
+  raw F0 gate" item is NOT implemented in this run — this brief
+  freezes S1 as-is; the probe remains an outstanding productization
+  item (the raw gate's ~25% adult-women fire rate is a known blemish;
+  Phase 1 showed the system stays safe because the verifier itself is
+  strict), recorded here so it is not silently dropped.
+- **Dev-use note (EG L4/G5):** JIBO DEV has informed the warp factor,
+  the view choices, and the assembly design. It is an adaptive
+  development set, used here for development ranking ONLY and
+  quarantined from any gating. No claim rests on it. JIBO consent
+  basis: C4 record (local evaluation use).
+
+## Evaluation (all local, development only)
+
+**The C4 child EXAM is SPENT and is not touched by this version** —
+not extracted, not scored, not used for selection of anything
+(child_eval/exam_manifest.json and cacheV6_childexam.npz stay
+closed). No new child exam exists; that remains blocked on ACAD
+access (Rusty's TalkBank signup) or an equivalent consent-cleared
+corpus.
+
+Ablation ladder, scored same-sitting for v7 int8 and (as the
+reference) v2 int8, on (a) JIBO child DEV (n = 398 clips / 53
+children; child_eval/dev_mel.npz float16 cache, the Phase 1
+convention) and (b) adult val (cacheV2_val.npz, n = 6,046):
+
+- Rung 0: base model alone (unwarped input)
+- Rung 1: + View 3 (alpha = 0.87 warped input)
+- Rung 2: + View 3 + S1 (child dev: F0-gated as designed; adult val:
+  UNGATED worst case — the val cache has no waveforms/F0, Phase 1's
+  convention, labelled as such)
+- Rung 3: + View 3 + S1 + S2
+
+Per rung: argmax accuracy; verifier true-accept (frozen rule, plus
+S1 extra accepts at rungs 2-3); false-accept over all (clip,
+wrong-word) pairs; S1-corrected argmax (rungs 2-3); S2 corrected /
+broke counts (rung 3). Per-word child-dev table at rungs 0 and 3
+(argmax + true-accept, with n; esp. a, three, one, no) and per-word
+adult-val table for rung 0. Size: v7 int8 ONNX bytes; assembly total
+= base int8 + S1 (5,681 B stored) + S2 (2,806 B stored).
+
+## Development targets (NOT gates — no keeper verdict exists)
+
+- Child dev argmax / true-accept vs v2 alone (0.4497 / 0.3894) and vs
+  the Phase 1 assembly (S1-corrected argmax 0.5302 / true-accept
+  0.4849, on this same dev).
+- **'a' child-dev true-accept vs 0.000 (n = 49) — the headline repair
+  check.** Per EG G6 this is a named REPORT, not a gate: the rate is
+  printed beside the headline either way.
+- Adult non-regression: v7 int8 val argmax vs v2 int8 val 0.9127
+  (same set; v2's adult test headline is 0.9088 — 0.9127 is its val
+  equivalent). Target: within 1 point.
+- False-accept <= 0.01 on child dev and on adult val, every rung.
+- Any component with a negative dev ablation is reported as such;
+  per EG section 4 it would be removed before a candidate freezes —
+  but no candidate freezes here, so ablation results are reported,
+  not acted on by re-tuning.
+
+## Terms safety (v7)
+
+Same rules as v1-v6, unchanged: no Muse / OpenAI / Luna / Gemini
+output in data, labels, selection, or filtering; only the two
+CC BY 4.0 corpora (Speech Commands v0.02; LibriSpeech dev-clean /
+train-clean-100) with deterministic code augmentation; wav2vec2 used
+as a locating tool only — all labels from LibriSpeech's human
+transcripts. JIBO Kids: eval-only under the C4 consent record, local
+use only, never trained on, never redistributed. Nothing published;
+no GitHub push.
+
+**Pre-training amendment to the v7 pre-registration (recorded BEFORE
+any Component B data was produced).** Component B's utterance order is
+amended: the duration-ascending tiebreak is replaced by a deterministic
+md5(path) tiebreak, and the <= 12 s filter is applied lazily at
+processing time (one sf.info per utterance when reached). Reason: the
+upfront scan (an sf.info over every candidate FLAC, ~28k files) is
+I/O-bound on this machine and had produced no output — and no clips,
+no shards, no done-file entries — when the first launch was killed
+during its scan phase. The substantive part of the order (starved-word
+token count descending, so the repair targets are mined first) is
+unchanged, as are the extractor, keep set, caps, and budget.
+
+## TalkBank route removed — owner decision (2026-11-19)
+Rusty: "do not move on talk bank, remove that." The TalkBank signup / Arizona Child Acoustic Database route is permanently off the table and must not be re-raised. The child-exam problem is therefore OPEN with no current route: future Read-Aloud versions remain development-ranked (JIBO dev + adult data) unless a different consent-cleared child corpus is found.
+
+**Owner-decision amendment to the v7 pre-registration (2026-11-19
+22:22 CST, recorded before training).** The TalkBank signup route is
+REMOVED permanently. Earlier references in this pre-registration to
+ACAD / a fresh child exam as the pending unlock for a keeper verdict
+are superseded and must not be presented as a future route anywhere.
+Child-exam status, verbatim: "no current route to a fresh child exam;
+development ranking only." The standing statement carried by every
+v7 artifact is therefore: "v7 is a development model; no keeper
+verdict exists or is implied. Child-exam status: no current route to
+a fresh child exam; development ranking only." Everything else in
+the pre-registration is unchanged.
+
+## v7 DEVELOPMENT retrain — RESULTS (2026-11-19)
+
+**v7 is a development model; no keeper verdict exists or is implied.
+Child-exam status: no current route to a fresh child exam; development
+ranking only.** v2 remains the keeper. Per Rusty's 2026-11-19 standing
+GitHub rule (pass frozen gates AND improve -> push as default): the
+rule was considered and v7 does NOT qualify — its keeper gates are
+only evaluable on a fresh child exam, an unevaluated gate is not a
+passed gate, and no such exam exists. v7 was NOT pushed to GitHub.
+
+### Run record
+- Colab: balance 576.05 -> 576.01 = **0.04 units used** (cap 2.0).
+  T4 runtime deleted in the driver's finally path; list_runtimes
+  verified empty afterwards. (One aborted first attempt: a NameError
+  in the driver's own verify cell — the staged data itself verified
+  SHA-OK — fixed and relaunched; included in the 0.04.)
+- Training: v2 recipe verbatim on cacheV7_train.npz (38,795 clips;
+  sha256 a720a32c...); best epoch 15, float val 0.9163; int8 export
+  62,084 B (v2: 62,151 B); full assembly with frozen S1+S2 = 70,572 B.
+- Data repair as registered: pool 'a' 80 -> 1,040 (Component A: the
+  960 mined clips), train 'a' 64 -> 484 after cap/split; Component B
+  added 1,158 function-word clips (me +128, my +122, we +110 pools).
+  Component B accounting: the span < 0.04 s subset is exactly 0 of
+  1,158 — multi-letter function words never align below 2 CTC frames
+  (min observed span 0.04 s), so the old filter's damage was
+  concentrated on the single-token word 'a'. (Mining took two runs:
+  a runtime restart killed the first at 600 utts; the second finished
+  the registered 45-minute budget.)
+
+### Child DEV ablation ladder (JIBO dev, n=398; v7 int8; v2 int8
+same-sitting reference in parentheses)
+- Rung 0 base:        argmax 0.4698 (0.4523), TA 0.4045 (0.3794), FA 0.0053 (0.0056)
+- Rung 1 +View3:      argmax 0.4598 (0.5176), TA 0.4095 (0.4724), FA 0.0054 (0.0048)
+- Rung 2 +View3+S1:   TA 0.4422 (0.4849), corrected argmax 0.4874 (0.5302), FA 0.0064 (0.0059); S1 rescued 13 true clips (v2: 5)
+- Rung 3 +View3+S1+S2: S2 corrected 7 / broke 0 (3/0); combined corrected argmax 0.4950 (0.5302), TA 0.4422, FA 0.0064
+- Development targets: v7 ALONE beats the v2-alone targets
+  (0.4497/0.3894 recorded; 0.4523/0.3794 same-sitting). The v7 full
+  assembly does NOT reach the Phase 1 assembly targets
+  (0.5302/0.4849): **View 3 is a negative ablation on v7** (argmax
+  -1.0 pt vs v7's own rung 0) although it was worth +6.5 pts on v2.
+  S1 and S2 still add positively on top of it. Frozen components are
+  reported, not re-tuned, per the pre-registration.
+- False-accept <= 0.01 on every rung, both datasets: MET.
+
+### The 'a' headline repair check: NOT MET — and the mechanism is now known
+'a' child-dev true-accept is 0.000 at every rung (n=49), unchanged
+from v2; argmax also 0.000. Diagnostic (recorded in
+metrics_v7_dev.json): v7 fits ADULT 'a' — 90.3% argmax on its own
+484 train 'a' clips, mean P(a) 0.792 — so the data repair did fix
+the class starvation it targeted. But on child 'a' clips v7 assigns
+mean P(a) 0.004 (max 0.028), scattering to on/go/bed/_other_/two,
+and predicts 'a' zero times in all 398 dev clips. The remaining
+failure is the adult->child register/channel gap for this
+ultra-short word — the same wall Phase 1's adult-trained bolt-on
+verifier hit — not a training-count gap. More adult 'a' data will
+not close it.
+
+### Adult val (n=6,046, frozen cacheV2_val; v2 in parentheses)
+- Rung 0: argmax 0.9170 (0.9127) — non-regression MET (+0.43 pt);
+  TA 0.9152 (0.9114), FA 0.0014 (0.0016).
+- +S1 (ungated worst case): TA 0.9238, corrected argmax 0.9239, FA 0.0018.
+- +S2: corrected 3 / broke 4 on v7 (v2: 11/1) — slightly negative on
+  v7 adults, reported as-is.
+- Warped-adult diagnostic (out-of-design): argmax 0.8784 — the warp
+  hurts adults, as expected for a child-register transform.
+
+### Per-word child dev (rung 0 -> rung 3 argmax; TA in metrics file)
+a (n=49): 0.000 -> 0.000. three (n=64): 0.359 -> 0.609 (S2 rescue).
+one (n=59): 0.661 -> 0.644. no (n=146): 0.555 -> 0.507, TA 0.418 ->
+0.425. two (n=59): 0.678 -> 0.712. yes (n=11): 0.182 -> 0.182.
+and (n=5): 0.000 -> 0.000.
+
+### G4 nested-CV alpha diagnostic (expectation-setting only)
+CV estimate at fold-selected alpha: TA 0.4598 / argmax 0.5075 vs
+naive full-dev alpha=0.87: 0.4724 / 0.5176 — selection optimism
+~1.3 TA pts. 4 of 5 child-grouped folds selected 0.87 (fold 0: 0.74).
+
+### Pipeline verification
+The same-sitting v2 reference reproduces Phase 1's recorded numbers
+exactly on child-dev rungs 1-3 and the full adult ladder. Child-dev
+rung 0 differs slightly (0.4523/0.3794 here vs C4's 0.4497/0.3894 —
+1 clip argmax, 4 clips TA), most consistent with C4 having scored
+pre-cache float32 mel; all comparisons above use the same-sitting
+reference.
+
+### Still open (unchanged by this run)
+- Child exam: no current route to a fresh child exam; development
+  ranking only. No keeper verdict is possible for v7.
+- EG's learned register probe to replace S1's raw F0 gate was not
+  implemented in this run (S1 carried frozen per the brief); it
+  remains an outstanding productization item.
+- Full numbers: metrics_v7_dev.json; mining: metrics_mine_func.json;
+  build: build_v7_meta.json; Colab run: ~/workspace/colab/ra-v7/results.json.
+
+---
+
+# RA-FE1 (2026-11-21) — audio front-end candidate: FAIL, no push
+
+Inference-only candidate (v2 int8 unchanged, sha256 fba22193…; validation
+label unchanged: adult/teen only). Design + frozen gates:
+`autonomous/ra-fe1/PREREGISTRATION.md`; full verdict:
+`autonomous/ra-fe1/VERDICT.md`. FAIL 2/6 gates: adult clean argmax
+0.7887 (gate ≥0.8988), dirty pooled worse on both sets. Child dev 'a'
+TA stayed 0.000 (no drop, no gain). Ablation: energy trim −12 pts and
+per-utterance mel normalization (zeroes adult 'a'/'the'/'we') are the
+harmful components; high-pass + RMS leveling alone is near-neutral
+(0.9015) and won child-dev gain−12 — logged as future RA-FE2 idea only.
+Baseline reproduction was exact (waveform sets rebuilt from source,
+6,413 adult + 398 child-dev clips, mel match ≤0.0039). Local CPU only,
+0 Colab units. Nothing pushed; shipped predict.py unchanged.
+
+---
+
+# RA-PW1 (2026-11-21) — per-word thresholds: FAIL, no push
+
+Decision-rule candidate (v2 int8 unchanged; label unchanged). Design +
+frozen gates: `autonomous/ra-pw1/PREREGISTRATION.md`; verdict:
+`autonomous/ra-pw1/VERDICT.md`. Per-word τ tuned on adult val + child
+dev only, frozen (`tau_table.json`) before the single adult-test
+scoring: test TA 0.8985 (gate ≥0.9077) FAIL; FA passed (0.0016 /
+0.0018); child dev 'a' in-sample TA 0.000 (gate ≥0.10) FAIL — child
+'a' p-band max is 0.0577 and 'a' is never argmax, so no threshold can
+accept it. Global τ=0.30 stays shipped. Local CPU only, 0 Colab units.
+
+---
+
+# RA-SP (2026-11-21) — specialist verifiers, queue #3: SP0 FAIL (closed), SP1 FAIL by 0.00004, no push
+
+Design + frozen gates: `autonomous/ra-sp/PREREGISTRATION.md`; verdict:
+`autonomous/ra-sp/VERDICT.md`. SP0 ('a', invariant features only, the
+named change vs dead S3): child dev AUC 0.5377, FA 0.1289 — FAIL, and
+per preregistration the 'a' specialist line is CLOSED permanently
+(third strike). SP1 ('no' rescue specialist, threshold frozen on adult
+val): child dev 'no' TA 0.3836→0.6233, adult test TA 0.8988→0.9039,
+adult 'no' TA 0.8914→0.9728 — but adult test FA pairs exact 0.0020366
+vs gate ≤0.0020: FAIL by 0.00004, no push. Follow-up RA-SP2 logged
+(exact-FA scan, rank-2-only gate). Local CPU only, 0 Colab units.
+
+---
+
+# RA-PHRASE (2026-11-21) — phrase-window verification: FAIL, no push
+
+Product-logic prototype (synthetic spliced phrases, dev only; v2
+unchanged, label unchanged). Design + frozen gates:
+`autonomous/ra-phrase/PREREGISTRATION.md`; verdict:
+`autonomous/ra-phrase/VERDICT.md`. Restricted function-word argmax
+gives child dev 'a' 0.0408 isolated and 0.000 in spliced phrases;
+adult spliced 0.010. FAIL gates 1/3/4, gate 2 unevaluated (n=5).
+Local CPU only, 0 Colab units.
+
+---
+
+# RA-SP2 (2026-11-21) — 'no' rescue, FA-exact: FAIL by one clip, no push, line closed
+
+Design + frozen gates (+ one pre-scoring amendment, recorded in the
+file): `autonomous/ra-sp2/PREREGISTRATION.md`; verdict:
+`autonomous/ra-sp2/VERDICT.md`. Adult gates pass (TA 0.90239, FA exact
+0.0017935); child dev 'no' TA 0.45205 vs gate 0.4541 — 66 of 146 clips
+where 67 were needed. Per its own preregistration the 'no' rescue
+line closes here: SP1 (loose) broke FA, SP2 (strict) misses the
+child gate, and a middle setting chosen now would be test-tuning.
+Local CPU only, 0 Colab units.
+
+---
+
+# RA-D1 (2026-11-21) — short-word temporal view: FAIL gates 1+2, no push
+
+Design + frozen gates: `autonomous/ra-d1/PREREGISTRATION.md`; verdict:
+`autonomous/ra-d1/VERDICT.md`. Waveform reconstruction verified 100%
+against frozen caches pre-training. Colab T4, 0.03 units (balance
+delta). Adult val 0.9211 int8 — best on record — and child TA rose
+to 0.4171, but child 'a' stayed 0.000 (0/49) and child argmax fell
+to 0.4548 vs the 0.4698 line. v2 remains default; nothing pushed.
+
+---
+
+# RA-D4 (2026-11-21) — formant/duration aux channel: FAIL gates 1+2, no push
+
+Design + frozen gates: `autonomous/ra-d4/PREREGISTRATION.md`; verdict:
+`autonomous/ra-d4/VERDICT.md`. Colab T4, 0.03 units (balance delta).
+Child dev regressed vs v7 (argmax 0.4221, TA 0.3719); child 'a' TA
+still 0.000 (argmax 0.0204, its first nonzero). Adult val 0.9105 int8
+passed. v2 remains default; nothing pushed.
+
+---
+
+# RA-FE2 (2026-11-21) — high-pass + RMS leveling only: FAIL gates 2+4, no push
+
+Design + frozen gates: `autonomous/ra-fe2/PREREGISTRATION.md`; verdict:
+`autonomous/ra-fe2/VERDICT.md`. Leveling fixed the gain−12 condition
+(adult TA +3.1, child TA +9.6 pts) but child clean argmax slipped to
+0.4347 (gate 0.4397) and pooled dirty argmax gained only +0.004 adult /
+−0.005 child vs the +0.02 gate. Front-end line closed; shipped
+front-end unchanged. Local CPU only, 0 Colab units.
+
+---
+
+# RA-PT1 (2026-11-21) — register-shift augmentation: FAIL gates 1+2, no push
+
+Design + frozen gates: `autonomous/ra-pt1/PREREGISTRATION.md`; verdict:
+`autonomous/ra-pt1/VERDICT.md`. Colab T4, 0.06 units (balance delta).
+Best adult val on record (0.9300 int8) and best child TA (0.4322),
+but child 'a' stayed 0.000 even with pitch-shifted adult 'a' in
+training — the 'a' gap is not register. RA-PT2 skipped per its own
+precondition. v2 remains default; nothing pushed.
+
+---
+
+# RA-FOC1 (2026-11-21) — short-word class-weighted loss: FAIL gates 1+2+4, no push
+
+Design + frozen gates: `autonomous/ra-foc1/PREREGISTRATION.md`;
+verdict: `autonomous/ra-foc1/VERDICT.md`. Colab T4, 0.04 units
+(balance delta). Adult val fell to 0.8961 and child 'a' stayed
+0.000; a few child short words hit program bests ('no' TA 0.4932)
+but headline gates rule. v2 remains default; nothing pushed.
+
+---
+
+# RA-MIX1 (2026-11-21) — mel mixup: FAIL gates 1+2+4, no push
+
+Design + frozen gates: `autonomous/ra-mix1/PREREGISTRATION.md`;
+verdict: `autonomous/ra-mix1/VERDICT.md`. Colab T4, 0.01 units
+(balance delta; ~0.10 rate estimate). Child argmax hit the line
+exactly (0.4698) but TA fell to 0.3794, 'a' TA stayed 0.000, adult
+val int8 0.9065 missed by 0.0005. v2 remains default; nothing pushed.
+
+---
+
+# RA-PH2 (2026-11-21) — phrase-window training + stretched 'a': FAIL gate 1 only, no push
+
+Design + frozen gates: `autonomous/ra-ph2/PREREGISTRATION.md`;
+verdict: `autonomous/ra-ph2/VERDICT.md`. Colab T4, 0.05 units
+(balance delta). First candidate to pass gates 2–5 together (child
+argmax 0.4749, TA 0.4070, FA 0.0037, adult val 0.9147) — child 'a'
+still exactly 0.000. All-gates rule: no push. v2 remains default.
+
+---
+
+# Campaign close (2026-11-21) — Read-Aloud autonomous iteration day
+
+Fourteen candidates run, four killed pre-test by Elephant Goldfish
+critique, one EG modification declined as dev-fitting (RA-LA2).
+Nothing passed all frozen gates; nothing was pushed; **v2 + global
+τ=0.30 remain the shipped default**, adult/teen validation label
+unchanged. Total Colab spend for the day: ~0.22 units (balance
+deltas). Luna: EG critiques only, ~$0.002.
+
+Best results on record, all rejected on the all-gates rule:
+RA-PT1 adult val 0.9300 int8 (register-shift augmentation);
+RA-PH2 first to pass child gates 2–5 together. The child 'a' slice
+(0.000 across every candidate) is diagnosed as a label/task
+mismatch: JIBO 'a' is a long open vowel in a phrase window; every
+licensed training 'a' is a 56 ms article blip, and no transform of
+it (duration, context, register, formant means) transfers. Next
+step belongs to Rusty: new data, an adult-side product decision on
+the PT1 recipe, or accept v2 as-is. Full record: autonomous/
+(PREREGISTRATION/VERDICT per candidate, rejects.tsv, DIAGNOSTIC-A.md).
+
+---
+
+# v3 SHIPPED (2026-11-21) — RA-PT1 recipe becomes the release
+
+Per Rusty's direction ("whatever you think is best of the 3
+questions"), the PT1 register-shift recipe was finalized as v3 and
+pushed as the repo default. Adult test (int8, shipped artifact
+verified end-to-end with the v2 input contract — normalized mel):
+overall 0.9228 (v2: 0.9088), decision-rule TA 0.9163 (v2: 0.8977),
+FA pairs 0.0013 (v2: 0.0017). fp32: 0.9239 / TA 0.9173. Per-source
+fp32: Speech Commands 0.9334 (v2 0.918), LibriSpeech 0.8228 (v2
+0.837 — a small dip, disclosed in the README table). Decision rule
+unchanged and NOT retuned (τ=0.30, margin 0.0). Validation label
+unchanged: adult/teen voices only, NOT validated on children 5–8;
+child numbers remain JIBO-dev-only (v3 dev: argmax 0.4598, TA
+0.4322, 'a' 0.000). model_v3_int8.onnx 62,084 B, sha256
+55fc825d4b14677dd97a886cd641cd2d0c2f8f81c0a85bfb30f480fd8925817a.
+v2 files remain in the repo.

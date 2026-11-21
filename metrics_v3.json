@@ -1,0 +1,257 @@
+{
+  "version": 3,
+  "recipe": "v2 recipe + register-shift augmentation (RA-PT1): every training clip duplicated with a pitch/tempo x1.26 resampled copy; decision rule unchanged (tau 0.30, margin 0.0, frozen, not retuned)",
+  "classes": [
+    "down",
+    "go",
+    "one",
+    "three",
+    "two",
+    "cat",
+    "dog",
+    "bird",
+    "tree",
+    "house",
+    "bed",
+    "happy",
+    "stop",
+    "yes",
+    "no",
+    "on",
+    "a",
+    "and",
+    "away",
+    "can",
+    "come",
+    "for",
+    "here",
+    "in",
+    "is",
+    "it",
+    "little",
+    "look",
+    "make",
+    "me",
+    "my",
+    "not",
+    "said",
+    "see",
+    "the",
+    "to",
+    "up",
+    "we",
+    "where",
+    "you",
+    "_other_",
+    "_silence_"
+  ],
+  "n_vocab_words": 40,
+  "params": 42586,
+  "best_epoch": 15,
+  "val_best_acc": 0.9297,
+  "per_source_test_acc": {
+    "librispeech": 0.8228,
+    "speech_commands": 0.9334
+  },
+  "test_overall_acc": 0.9239,
+  "test_word_only_acc": 0.9229,
+  "test_false_accept_rate_other_silence_as_word_argmax": 0.0675,
+  "decision_rule": {
+    "form": "accept e iff p(e) >= tau and p(e) - max_{c != e} p(c) >= margin",
+    "tau": 0.3,
+    "margin": 0.0,
+    "false_accept_budget": 0.1,
+    "val_false_accept": 0.0012,
+    "val_true_accept": 0.9257,
+    "test_false_accept_all_pairs": 0.0013,
+    "test_false_accept_other_silence": 0.0014,
+    "test_true_accept": 0.9173,
+    "test_false_reject": 0.0827
+  },
+  "int8_onnx": {
+    "test_overall_acc": 0.9228,
+    "test_false_accept_all_pairs": 0.0013,
+    "test_true_accept": 0.9163
+  },
+  "per_word_test": {
+    "down": {
+      "n": 406,
+      "acc": 0.8892
+    },
+    "go": {
+      "n": 402,
+      "acc": 0.8905
+    },
+    "one": {
+      "n": 399,
+      "acc": 0.9424
+    },
+    "three": {
+      "n": 405,
+      "acc": 0.916
+    },
+    "two": {
+      "n": 424,
+      "acc": 0.9505
+    },
+    "cat": {
+      "n": 194,
+      "acc": 0.9381
+    },
+    "dog": {
+      "n": 220,
+      "acc": 0.9091
+    },
+    "bird": {
+      "n": 185,
+      "acc": 0.9027
+    },
+    "tree": {
+      "n": 193,
+      "acc": 0.886
+    },
+    "house": {
+      "n": 191,
+      "acc": 0.9738
+    },
+    "bed": {
+      "n": 207,
+      "acc": 0.9082
+    },
+    "happy": {
+      "n": 203,
+      "acc": 0.9557
+    },
+    "stop": {
+      "n": 411,
+      "acc": 0.9757
+    },
+    "yes": {
+      "n": 419,
+      "acc": 0.9857
+    },
+    "no": {
+      "n": 405,
+      "acc": 0.9481
+    },
+    "on": {
+      "n": 396,
+      "acc": 0.9343
+    },
+    "a": {
+      "n": 7,
+      "acc": 0.0
+    },
+    "and": {
+      "n": 54,
+      "acc": 0.7407
+    },
+    "away": {
+      "n": 11,
+      "acc": 0.9091
+    },
+    "can": {
+      "n": 6,
+      "acc": 0.6667
+    },
+    "come": {
+      "n": 10,
+      "acc": 0.6
+    },
+    "for": {
+      "n": 24,
+      "acc": 0.9167
+    },
+    "here": {
+      "n": 6,
+      "acc": 0.8333
+    },
+    "in": {
+      "n": 70,
+      "acc": 0.8714
+    },
+    "is": {
+      "n": 27,
+      "acc": 0.8889
+    },
+    "it": {
+      "n": 37,
+      "acc": 0.7297
+    },
+    "little": {
+      "n": 6,
+      "acc": 1.0
+    },
+    "look": {
+      "n": 4,
+      "acc": 0.75
+    },
+    "make": {
+      "n": 7,
+      "acc": 1.0
+    },
+    "me": {
+      "n": 18,
+      "acc": 0.8333
+    },
+    "my": {
+      "n": 18,
+      "acc": 1.0
+    },
+    "not": {
+      "n": 33,
+      "acc": 0.9394
+    },
+    "said": {
+      "n": 12,
+      "acc": 1.0
+    },
+    "see": {
+      "n": 5,
+      "acc": 0.8
+    },
+    "the": {
+      "n": 66,
+      "acc": 0.7879
+    },
+    "to": {
+      "n": 70,
+      "acc": 0.8429
+    },
+    "up": {
+      "n": 10,
+      "acc": 1.0
+    },
+    "we": {
+      "n": 19,
+      "acc": 0.5789
+    },
+    "where": {
+      "n": 8,
+      "acc": 0.875
+    },
+    "you": {
+      "n": 25,
+      "acc": 0.84
+    },
+    "_other_": {
+      "n": 500,
+      "acc": 0.89
+    },
+    "_silence_": {
+      "n": 300,
+      "acc": 1.0
+    }
+  },
+  "onnx_fp32_bytes": 170937,
+  "onnx_int8_bytes": 62084,
+  "mel_mean": -7.267655372619629,
+  "mel_std": 5.523033142089844,
+  "validation_label": "validated on adult/teen voices, not yet on children 5-8",
+  "child_dev_jibo_labeled_dev_only": {
+    "note": "development set only (398 clips, 53 children); NOT a validation result",
+    "argmax": 0.4598,
+    "true_accept": 0.4322,
+    "false_accept_pairs": 0.0049
+  }
+}

@@ -35,17 +35,17 @@ frontier-model output in the training data. See PROVENANCE.md.
 
 ## Results (held-out test, speaker-disjoint, evaluated once)
 
-| Metric | v1 | v2 |
-|---|---|---|
-| Overall accuracy | 82.5% (6,012 clips) | **91.1%** (6,413 clips) |
-| Vocabulary-word accuracy | 82.7% | **91.0%** |
-| — Speech Commands clips | 83.0% | **91.8%** |
-| — LibriSpeech clips | 65.1% | **83.7%** |
-| False-accept, plain argmax (v1 definition) | 18.4% | **8.1%** |
-| False-accept with the decision rule | — (no rule) | **0.18%** |
-| True-accept with the decision rule | — | **90.2%** |
-| Words covered (of a 50-word list) | 26 | **40** |
-| Model size (int8 ONNX) | 60 KB | **62 KB** |
+| Metric | v1 | v2 | v3 |
+|---|---|---|---|
+| Overall accuracy | 82.5% (6,012 clips) | 91.1% (6,413 clips) | **92.4%** (6,413 clips) |
+| Vocabulary-word accuracy | 82.7% | 91.0% | **92.3%** |
+| — Speech Commands clips | 83.0% | 91.8% | **93.3%** |
+| — LibriSpeech clips | 65.1% | 83.7% | 82.3% |
+| False-accept, plain argmax (v1 definition) | 18.4% | 8.1% | **6.8%** |
+| False-accept with the decision rule | — (no rule) | 0.18% | **0.14%** |
+| True-accept with the decision rule | — | 90.2% | **91.7%** |
+| Words covered (of a 50-word list) | 26 | 40 | **40** |
+| Model size (int8 ONNX) | 60 KB | 62 KB | **62 KB** |
 
 False-accept = a clip that is *not* the target word being accepted as
 read correctly — the failure that matters most for a reading coach,
@@ -57,8 +57,24 @@ all wrong-word pairs) are falsely accepted. The int8 model scores
 essentially the same as fp32 (91.1% → 90.9% overall). v2 was trained
 on a Colab T4 GPU (16 epochs, ~72 s of GPU time, 0.14 compute units)
 from frozen speaker-disjoint caches: 37,769 train / 6,046 validation /
-6,413 test clips. Full per-word numbers: `metrics_v2.json` (v1:
-`metrics.json`).
+6,413 test clips. Full per-word numbers: `metrics_v3.json` (v2:
+`metrics_v2.json`, v1: `metrics.json`).
+
+**v3 (2026-11-21)** changes exactly one thing versus v2: the
+training data. Every training clip is duplicated with a
+register-shifted copy (pitch/tempo resampled x1.26), teaching the
+model that the same word arrives in higher, faster voices. Same
+architecture, same frozen decision rule (tau 0.30, margin 0.0, not
+retuned), same size class. Gains concentrate in Speech Commands
+(+1.5 pts) and in the decision rule's true-accept (+1.5 pts at
+lower false-accept); LibriSpeech clips dip slightly (83.7% ->
+82.3%). The validation status at the top of this README is
+unchanged and applies to v3 in full: **validated on adult/teen
+voices, NOT on children 5-8.** On the JIBO child DEV split (398
+clips, development only, not a release metric) v3 reaches argmax
+0.4598 / true-accept 0.4322 — the best child-dev true-accept of any
+whole model tried — with the word 'a' still at 0.000 (see
+PROVENANCE.md, 2026-11-21 campaign).
 
 ## How this compares
 
@@ -93,8 +109,9 @@ nothing about child accuracy, which remains unproven (see
 
 ## Phase 1 views + specialists — DEVELOPMENT (child DEV numbers only, not a release)
 
-> **Development update, 2026-11-19. v2 (above) remains the keeper and
-> the only released model in this repo.** Everything in this section is
+> **Development update, 2026-11-19. At the time of writing v2 was
+> the keeper; v3 (above) superseded it as the release on 2026-11-21
+> with the same adult/teen-only validation.** Everything in this section is
 > development work measured on the JIBO Kids **DEV** split only (398
 > clips / 53 children, disjoint by child from the spent C4/G1 exam).
 > These are **not** release numbers, there is no v7, and no new keeper
