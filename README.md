@@ -9,11 +9,17 @@ NOT THIS WORD**. One small ONNX model, no network, no account. Trained
 only on public, license-verified data — no AI-generated labels, no
 frontier-model output in the training data. See PROVENANCE.md.
 
-> **Validation status: validated on adult/teen voices, NOT yet on
-> children 5–8.** Every training and test voice is an adult (LibriSpeech)
-> or adult/teen (Google Speech Commands). Accuracy on the actual target
-> users — children aged 5–8 — is unproven. Treat this as a supervised
-> prototype: verdicts are hints for a supervising adult, not grades.
+> **Validation status: validated on adult/teen voices; v4 is also
+> evaluated on real child speech.** v4's training adds clips from 53
+> children (JIBO Kids Corpus, ages 4–7), and it was scored on a
+> held-out exam of 53 *different* children from the same corpus:
+> **82.8%** accuracy, **82.0%** true-accept with the decision rule
+> (see "Child evaluation" below). That is one research corpus of
+> children reading single words to a social robot — encouraging, and
+> the first child evidence this project has — but it is **not** a
+> clinical or educational validation, and accuracy on any given
+> child will vary. Treat this as a supervised prototype: verdicts
+> are hints for a supervising adult, not grades.
 
 ## How the verifier works
 
@@ -35,17 +41,17 @@ frontier-model output in the training data. See PROVENANCE.md.
 
 ## Results (held-out test, speaker-disjoint, evaluated once)
 
-| Metric | v1 | v2 | v3 |
-|---|---|---|---|
-| Overall accuracy | 82.5% (6,012 clips) | 91.1% (6,413 clips) | **92.4%** (6,413 clips) |
-| Vocabulary-word accuracy | 82.7% | 91.0% | **92.3%** |
-| — Speech Commands clips | 83.0% | 91.8% | **93.3%** |
-| — LibriSpeech clips | 65.1% | 83.7% | 82.3% |
-| False-accept, plain argmax (v1 definition) | 18.4% | 8.1% | **6.8%** |
-| False-accept with the decision rule | — (no rule) | 0.18% | **0.14%** |
-| True-accept with the decision rule | — | 90.2% | **91.7%** |
-| Words covered (of a 50-word list) | 26 | 40 | **40** |
-| Model size (int8 ONNX) | 60 KB | 62 KB | **62 KB** |
+| Metric | v1 | v2 | v3 | v4 |
+|---|---|---|---|---|---|
+| Overall accuracy | 82.5% (6,012 clips) | 91.1% (6,413 clips) | 92.4% (6,413 clips) | **92.7%** (6,413 clips) |
+| Vocabulary-word accuracy | 82.7% | 91.0% | 92.3% | **92.5%** |
+| — Speech Commands clips | 83.0% | 91.8% | 93.3% | **93.5%** |
+| — LibriSpeech clips | 65.1% | 83.7% | 82.3% | **83.7%** |
+| False-accept, plain argmax (v1 definition) | 18.4% | 8.1% | 6.8% | **6.0%** |
+| False-accept with the decision rule | — (no rule) | 0.18% | 0.14% | **0.11%** |
+| True-accept with the decision rule | — | 90.2% | 91.7% | **91.8%** |
+| Words covered (of a 50-word list) | 26 | 40 | 40 | **40** |
+| Model size (int8 ONNX) | 60 KB | 62 KB | 62 KB | **62 KB** |
 
 False-accept = a clip that is *not* the target word being accepted as
 read correctly — the failure that matters most for a reading coach,
@@ -76,6 +82,40 @@ clips, development only, not a release metric) v3 reaches argmax
 whole model tried — with the word 'a' still at 0.000 (see
 PROVENANCE.md, 2026-11-21 campaign).
 
+## Child evaluation (v4, 2026-11-21)
+
+v4 is the first version trained with real child speech, and the
+first with a held-out child evaluation. Training added 398 clips
+from **53 children** (the project's former dev split, retired as an
+evaluation when it became training data). The evaluation is a
+frozen exam of **384 clips from 53 different children** (ages 4–7,
+pre-K to grade 1), disjoint from every training child, scored once:
+
+| Child exam (int8) | v4 | best prior model (no child training) | v2 |
+|---|---|---|---|
+| Overall accuracy | **82.8%** | 51.0% | 44.3% |
+| True-accept with the decision rule | **82.0%** | 47.7% | 40.4% |
+| False-accept (all word pairs) | **0.31%** | 0.51% | 0.64% |
+| The word "a" (53 clips) | **90.6%** | 0.0% | — |
+
+The "a" row is the story of this release: across sixteen prior
+experiments the word scored exactly zero on child speech, because
+children say a long open vowel where every adult training clip has
+a 56 ms article blip. Only real child examples fixed it. Adult
+accuracy did not suffer (table above: v4 is also the best adult
+model in the repo).
+
+**Attribution — JIBO Kids Corpus.** Child speech data: Shankar et
+al. (2024), "The JIBO Kids Corpus," *JASA Express Letters* 4(11),
+115201 (DOI 10.1121/10.0034195); corpus distribution via Zenodo
+(DOI 10.5281/zenodo.13964792, v0.1). Word-level transcripts:
+DrivenData "JIBO Kids Corpus Transcripts" (K-12 AI Infrastructure
+Platform), CC BY 4.0. Corpus use terms per the DrivenData dataset
+listing: commercial and noncommercial use with attribution.
+Children in the corpus are anonymized; no child audio is
+redistributed in this repo — only the trained model and aggregate
+scores.
+
 ## How this compares
 
 The standard tiny-model reference for this task family is keyword
@@ -100,18 +140,19 @@ false-accept-tuned decision rule (rule false-accept 0.18% at
 90.2% true-accept on the held-out test). Same size class as the
 references: 42,586 parameters, 62 KB int8.
 
-And the standing caveat, unsoftened: those benchmarks are
-adult-voice benchmarks too, and this model is **not validated on
-children 5–8** — the actual target users. The comparison says
-the tiny-model engineering is in the expected range; it says
-nothing about child accuracy, which remains unproven (see
-"Validation status" at the top and "Honest limits" below).
+And the standing caveat, updated for v4 but not softened: those
+benchmarks are adult-voice benchmarks. v4 now has real child
+evidence behind it (see "Child evaluation" above) — one corpus,
+ages 4–7, single words read to a robot. That is a genuine held-out
+result, not a general guarantee for children 5–8 in classrooms and
+kitchens, which remains unproven (see "Validation status" at the
+top and "Honest limits" below).
 
 ## Phase 1 views + specialists — DEVELOPMENT (child DEV numbers only, not a release)
 
 > **Development update, 2026-11-19. At the time of writing v2 was
-> the keeper; v3 (above) superseded it as the release on 2026-11-21
-> with the same adult/teen-only validation.** Everything in this section is
+> the keeper; v3 superseded it on 2026-11-21, and v4 (above)
+> superseded v3 the same day with the first child-trained model.** Everything in this section is
 > development work measured on the JIBO Kids **DEV** split only (398
 > clips / 53 children, disjoint by child from the spent C4/G1 exam).
 > These are **not** release numbers, there is no v7, and no new keeper

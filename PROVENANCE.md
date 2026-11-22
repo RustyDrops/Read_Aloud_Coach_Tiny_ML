@@ -1500,3 +1500,60 @@ child numbers remain JIBO-dev-only (v3 dev: argmax 0.4598, TA
 0.4322, 'a' 0.000). model_v3_int8.onnx 62,084 B, sha256
 55fc825d4b14677dd97a886cd641cd2d0c2f8f81c0a85bfb30f480fd8925817a.
 v2 files remain in the repo.
+
+---
+
+# RA-C1 + RA-W1 (2026-11-21) — combination and warp: both FAIL gate 1 only
+
+RA-C1 (union of register-shift, VTLP, and phrase views; 155,180
+rows; Colab T4, 0.09 units): adult val 0.9287 int8, child dev
+argmax 0.4874 / TA 0.4397 / FA 0.0039 — gates 2–5 pass; child 'a'
+0.000. RA-W1 (frozen alpha-0.87 warp on RA-PH2): child argmax
+0.5327 / TA 0.4598 — best headline stack on record; 'a' 0.000;
+killed at step 1 per its EG modification. v3 remains default.
+
+# JIBO training approval + yield finding (2026-11-21)
+
+Rusty approved training on JIBO Kids with attribution, reversing
+the C4 voluntary eval-only hold (see child_eval/CONSENT.md
+addendum). Split audit: dev = 53 children, exam = 53 different
+children, zero overlap. Only 4 children (keys 205, 266, 274, 298)
+are in neither set. Faithful C4-style extraction (single-word
+vocab utterances from DrivenData JSONL + release .txt transcripts)
+across all their sessions yields 7 clips total (no x2, yes, two,
+three, tree, and one 'a' with a zero-length timestamp) — not a
+trainable set. RA-J1 therefore not run. Training on dev or exam
+children would destroy the only child evaluations and was NOT
+done. Remaining routes (Rusty's call): re-split (train on dev
+children, spend the exam as the new evaluation), a new child
+corpus (e.g. MyST, needs a data-use agreement), or family
+recordings of the 40 words.
+
+---
+
+# v4 SHIPPED (2026-11-21) — RA-J1: trained on the retired dev children, exam-gated
+
+Rusty's re-split decision ("Make it so #1"). RA-J1 = RA-C1 union
+cache + the 398 retired-dev JIBO clips x20 (7,960 rows; 163,140
+total). Colab T4, 0.09 units. The frozen exam (384 clips, 53
+children disjoint from all training children) was scored ONCE, J1
+and the C1 control in the same pass:
+
+| Exam (int8) | J1 (v4) | C1 control | v2 (2026-11-19) |
+|---|---|---|---|
+| argmax | **0.8281** | 0.5104 | 0.4427 |
+| rule TA | **0.8203** | 0.4766 | 0.4036 |
+| FA pairs | 0.0031 | 0.0051 | 0.0064 |
+| 'a' argmax/TA | **0.9057 / 0.9057** | 0.000 / 0.000 | — |
+
+ALL SIX frozen gates passed (autonomous/ra-j1/PREREGISTRATION.md).
+Adult test int8 0.9219 (v3: 0.9228), fp32 0.9267 — no adult cost.
+Shipped artifact verified end-to-end on the exam with the repo
+input contract (0.8281 / 0.8203 / 'a' 0.9057, exact match).
+model_v4_int8.onnx 62,084 B, sha256
+eb885d4635b628f4546d3cc58e71709d5617d72f59be0bb7555a69556f6ff9fa.
+Attribution (JIBO Kids): Shankar et al. (2024) JASA Express
+Letters 4(11) 115201; Zenodo 10.5281/zenodo.13964792; DrivenData
+transcripts CC BY 4.0. The dev split is retired as an evaluation
+from this date; the exam is the sole child evaluation and is
+scored sparingly (once per candidate finalize). v3 files retained.

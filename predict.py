@@ -1,21 +1,22 @@
-"""Read-Aloud Coach v3 — verify a spoken clip against an expected page word.
+"""Read-Aloud Coach v4 — verify a spoken clip against an expected page word.
 
 Usage: python predict.py <wav> <expected_word>
 
-Model: model_v3_int8.onnx (42 classes = 40 covered vocabulary words +
+Model: model_v4_int8.onnx (42 classes = 40 covered vocabulary words +
 _other_ + _silence_). Class list and mel normalisation stats are read from
-metrics_v3.json. Both files are looked for next to this script first, then
+metrics_v4.json. Both files are looked for next to this script first, then
 in the parent directory.
 
 Decision rule (tuned on the validation split only, false-accept budget
-<= 0.10; see metrics_v3.json / PROVENANCE.md):
+<= 0.10; see metrics_v4.json / PROVENANCE.md):
     READ  iff  p(expected) >= TAU  and  p(expected) - max_{c != expected} p(c) >= MARGIN
 with TAU = 0.30, MARGIN = 0.0. Otherwise the verdict is NOT THIS WORD when
 the model's top prediction is a different covered word, and STUMBLED when
 it cannot confirm the word (top is _other_/_silence_, or the expected word
 leads but below the confidence threshold).
 
-Validation status: validated on adult/teen voices, not yet on children 5-8.
+Validation status: validated on adult/teen voices, and evaluated on a
+held-out set of 53 children aged 4-7 (JIBO Kids exam, see README).
 Treat verdicts as hints for a supervising adult, not grades.
 """
 import sys, os, json
@@ -36,7 +37,7 @@ def find(name):
             return p
     raise SystemExit(f"cannot find {name} next to predict.py or in its parent directory")
 
-metrics = json.load(open(find("metrics_v3.json")))
+metrics = json.load(open(find("metrics_v4.json")))
 CLASSES = metrics["classes"]
 mu, sd = metrics["mel_mean"], metrics["mel_std"]
 mel_tf = torchaudio.transforms.MelSpectrogram(sample_rate=SR, n_fft=512, hop_length=256, n_mels=40)
@@ -53,7 +54,7 @@ def main(wav_path, expected):
         x = np.pad(x, (0, SR - len(x)))
     m = torch.log(mel_tf(torch.from_numpy(x).unsqueeze(0)) + 1e-6).numpy()
     m = ((m - mu) / sd).astype(np.float32)[None]
-    sess = ort.InferenceSession(find("model_v3_int8.onnx"), providers=["CPUExecutionProvider"])
+    sess = ort.InferenceSession(find("model_v4_int8.onnx"), providers=["CPUExecutionProvider"])
     logits = sess.run(None, {"mel": m})[0][0]
     p = np.exp(logits - logits.max())
     p /= p.sum()

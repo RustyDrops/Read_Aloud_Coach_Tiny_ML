@@ -1,0 +1,260 @@
+{
+  "version": 4,
+  "recipe": "RA-C1 union (register-shift + VTLP + phrase views of the adult data) + JIBO Kids clips from 53 children (the retired C4 dev split) repeated x20; decision rule unchanged (tau 0.30, margin 0.0, frozen, not retuned)",
+  "classes": [
+    "down",
+    "go",
+    "one",
+    "three",
+    "two",
+    "cat",
+    "dog",
+    "bird",
+    "tree",
+    "house",
+    "bed",
+    "happy",
+    "stop",
+    "yes",
+    "no",
+    "on",
+    "a",
+    "and",
+    "away",
+    "can",
+    "come",
+    "for",
+    "here",
+    "in",
+    "is",
+    "it",
+    "little",
+    "look",
+    "make",
+    "me",
+    "my",
+    "not",
+    "said",
+    "see",
+    "the",
+    "to",
+    "up",
+    "we",
+    "where",
+    "you",
+    "_other_",
+    "_silence_"
+  ],
+  "n_vocab_words": 40,
+  "params": 42586,
+  "best_epoch": 14,
+  "val_best_acc": 0.9302,
+  "per_source_test_acc": {
+    "librispeech": 0.8373,
+    "speech_commands": 0.9352
+  },
+  "test_overall_acc": 0.9267,
+  "test_word_only_acc": 0.925,
+  "test_false_accept_rate_other_silence_as_word_argmax": 0.06,
+  "decision_rule": {
+    "form": "accept e iff p(e) >= tau and p(e) - max_{c != e} p(c) >= margin",
+    "tau": 0.3,
+    "margin": 0.0,
+    "false_accept_budget": 0.1,
+    "val_false_accept": 0.0012,
+    "val_true_accept": 0.9255,
+    "test_false_accept_all_pairs": 0.0012,
+    "test_false_accept_other_silence": 0.0011,
+    "test_true_accept": 0.9182,
+    "test_false_reject": 0.0818
+  },
+  "int8_onnx": {
+    "test_overall_acc": 0.9219,
+    "test_false_accept_all_pairs": 0.0013,
+    "test_true_accept": 0.9157
+  },
+  "per_word_test": {
+    "down": {
+      "n": 406,
+      "acc": 0.8867
+    },
+    "go": {
+      "n": 402,
+      "acc": 0.898
+    },
+    "one": {
+      "n": 399,
+      "acc": 0.9499
+    },
+    "three": {
+      "n": 405,
+      "acc": 0.9235
+    },
+    "two": {
+      "n": 424,
+      "acc": 0.9528
+    },
+    "cat": {
+      "n": 194,
+      "acc": 0.9227
+    },
+    "dog": {
+      "n": 220,
+      "acc": 0.9136
+    },
+    "bird": {
+      "n": 185,
+      "acc": 0.9135
+    },
+    "tree": {
+      "n": 193,
+      "acc": 0.8549
+    },
+    "house": {
+      "n": 191,
+      "acc": 0.9738
+    },
+    "bed": {
+      "n": 207,
+      "acc": 0.9227
+    },
+    "happy": {
+      "n": 203,
+      "acc": 0.9606
+    },
+    "stop": {
+      "n": 411,
+      "acc": 0.9732
+    },
+    "yes": {
+      "n": 419,
+      "acc": 0.9761
+    },
+    "no": {
+      "n": 405,
+      "acc": 0.963
+    },
+    "on": {
+      "n": 396,
+      "acc": 0.9242
+    },
+    "a": {
+      "n": 7,
+      "acc": 0.0
+    },
+    "and": {
+      "n": 54,
+      "acc": 0.7407
+    },
+    "away": {
+      "n": 11,
+      "acc": 0.9091
+    },
+    "can": {
+      "n": 6,
+      "acc": 0.3333
+    },
+    "come": {
+      "n": 10,
+      "acc": 1.0
+    },
+    "for": {
+      "n": 24,
+      "acc": 0.9583
+    },
+    "here": {
+      "n": 6,
+      "acc": 1.0
+    },
+    "in": {
+      "n": 70,
+      "acc": 0.9286
+    },
+    "is": {
+      "n": 27,
+      "acc": 0.9259
+    },
+    "it": {
+      "n": 37,
+      "acc": 0.8108
+    },
+    "little": {
+      "n": 6,
+      "acc": 1.0
+    },
+    "look": {
+      "n": 4,
+      "acc": 0.25
+    },
+    "make": {
+      "n": 7,
+      "acc": 0.8571
+    },
+    "me": {
+      "n": 18,
+      "acc": 0.8333
+    },
+    "my": {
+      "n": 18,
+      "acc": 0.8889
+    },
+    "not": {
+      "n": 33,
+      "acc": 0.9091
+    },
+    "said": {
+      "n": 12,
+      "acc": 0.9167
+    },
+    "see": {
+      "n": 5,
+      "acc": 1.0
+    },
+    "the": {
+      "n": 66,
+      "acc": 0.7576
+    },
+    "to": {
+      "n": 70,
+      "acc": 0.8714
+    },
+    "up": {
+      "n": 10,
+      "acc": 1.0
+    },
+    "we": {
+      "n": 19,
+      "acc": 0.6842
+    },
+    "where": {
+      "n": 8,
+      "acc": 1.0
+    },
+    "you": {
+      "n": 25,
+      "acc": 0.8
+    },
+    "_other_": {
+      "n": 500,
+      "acc": 0.902
+    },
+    "_silence_": {
+      "n": 300,
+      "acc": 1.0
+    }
+  },
+  "onnx_fp32_bytes": 170937,
+  "onnx_int8_bytes": 62084,
+  "mel_mean": -6.8764495849609375,
+  "mel_std": 5.635843276977539,
+  "validation_label": "validated on adult/teen voices, not yet on children 5-8",
+  "child_exam_jibo": {
+    "note": "held-out exam: 384 clips from 53 children (ages 4-7, PreK-G1) disjoint from all training children; scored once at finalize",
+    "argmax": 0.8281,
+    "true_accept": 0.8203,
+    "false_accept_pairs": 0.0031,
+    "a_argmax": 0.9057,
+    "a_true_accept": 0.9057,
+    "corpus": "JIBO Kids Corpus (Shankar et al. 2024, JASA Express Letters 4(11), 115201; Zenodo 10.5281/zenodo.13964792); transcripts: DrivenData JIBO Kids Corpus Transcripts, CC BY 4.0"
+  }
+}
