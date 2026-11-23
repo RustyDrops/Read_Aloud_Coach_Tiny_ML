@@ -1557,3 +1557,51 @@ Letters 4(11) 115201; Zenodo 10.5281/zenodo.13964792; DrivenData
 transcripts CC BY 4.0. The dev split is retired as an evaluation
 from this date; the exam is the sole child evaluation and is
 scored sparingly (once per candidate finalize). v3 files retained.
+
+## RA-J2 (2026-11-21) — REJECTED at the exam gates
+v4 + 122 real child phrase clips (<=1.6 s, one vocab word; EG-modified)
+x20 + 6 held-out single-word clips x20. Exam: argmax 0.8281 (tie with
+v4), TA 0.8151, 'a' TA 0.8113 — failed frozen gates 1-3. Per-word:
+no/one/two/three all up (+3 to +16 pts), 'a' down 9.4 pts. Phrase
+data helps content words, hurts the unstressed article. v4 remains
+the default. Detail: autonomous/ra-j2/VERDICT.md.
+
+## RA-J3 (2026-11-21) — REJECTED at the exam gates (CV passed first)
+Phrase clips excluding 'a' (52 x20) + 6 held-out singles, gated by
+child-grouped CV inside the 56 training children (passed: +4.9 pts
+argmax, 'a' 9/9). Exam: argmax 0.8281 (tie with v4), TA 0.7995,
+'a' TA 0.8679 — failed frozen gates 2-3. CV-to-exam transfer gap
+recorded. Phrase lever exhausted (J2+J3); v4 remains the default.
+Detail: autonomous/ra-j3/VERDICT.md + PREREGISTRATION.md.
+
+---
+
+# v5 SHIPPED (2026-11-22) — RA-MEGA sweep: JIBO oversample x40, CV-selected
+
+Pre-registered sweep (mega-sweep-2026-11-22/read-aloud/ in the
+project workspace): six configurations ranked ONLY by child-grouped
+CV inside the 53 training children (13 held-out children, 113 clips;
+the frozen exam was not touched during selection). CV (int8 argmax):
+base x20 0.8319, x10 0.8230, **x40 0.8673**, register-shifted child
+clips (x0.79 copies) 0.8053, lr 1e-3 0.8230, lr 4e-3 0.8053. x40 was
+the unique qualifier under the frozen CV rule (TA/'a'/FA/adult-val
+guards + >= base+0.01). D-seed check on CV: seed 202 scored 0.8230
+vs seed 101's 0.8673, so the final used seed 101 (seed noise on
+this CV is ~4 pts — recorded, not hidden). Final: RA-C1 cache +
+all 398 dev clips x40 = 171,100 rows, recipe verbatim, best epoch
+14 (adult val 0.9304). The frozen exam was scored ONCE, int8:
+argmax **0.8672** (v4 0.8281), rule TA **0.8516** (v4 0.8203), FA
+pairs **0.0026** (v4 0.0031), 'a' TA **0.8868** (v4 0.9057). Adult
+test fp32 0.9219 (v4 0.9267 — a small adult cost, disclosed in the
+README). ALL SIX frozen promotion gates passed (exam argmax
+> 0.8281; TA >= 0.8203; FA <= 0.006 as adjusted pre-training in the
+preregistration from the brief's exact-tie draft of 0.0031, with
+the reasoning recorded there; 'a' TA >= 0.85; adult fp32 >= 0.9167;
+int8 <= 100,000 B at 64,073 B). Shipped as the GitHub default;
+v4 files retained. model_v5_int8.onnx sha256
+49cd9649b12ad620cf9494dcefa807b32d2d87a303e8914e67cf05c0b84c6806.
+Colab: two T4 sittings, ~1.3 units by rate x elapsed (estimates;
+account shared with parallel jobs). Attribution (JIBO Kids):
+Shankar et al. (2024) JASA Express Letters 4(11) 115201; Zenodo
+10.5281/zenodo.13964792; DrivenData transcripts CC BY 4.0.
+Detail: mega-sweep VERDICT.md + PREREGISTRATION.md.

@@ -2,19 +2,22 @@
 
 ![Read-Aloud Coach — read a word out loud, it checks the reading](promo/read-aloud-promo-v3.png)
 
-A tiny known-page word verifier for early readers (62 KB, runs fully
+A tiny known-page word verifier for early readers (64 KB, runs fully
 offline): the child reads a word from a known page aloud, and the model
 says whether that word was read correctly — **READ** vs **STUMBLED /
 NOT THIS WORD**. One small ONNX model, no network, no account. Trained
 only on public, license-verified data — no AI-generated labels, no
 frontier-model output in the training data. See PROVENANCE.md.
 
-> **Validation status: validated on adult/teen voices; v4 is also
-> evaluated on real child speech.** v4's training adds clips from 53
-> children (JIBO Kids Corpus, ages 4–7), and it was scored on a
-> held-out exam of 53 *different* children from the same corpus:
-> **82.8%** accuracy, **82.0%** true-accept with the decision rule
-> (see "Child evaluation" below). That is one research corpus of
+> **Validation status: validated on adult/teen voices; v4 and v5
+> are also evaluated on real child speech.** v5 (the current
+> default) is v4's recipe with the child clips' repetition raised
+> from x20 to x40 — the winning configuration of a pre-registered
+> sweep selected by cross-validation inside the training children
+> only, then scored once on the same held-out exam of 53 *different*
+> children (JIBO Kids Corpus, ages 4–7): **86.7%** accuracy,
+> **85.2%** true-accept with the decision rule (see "Child
+> evaluation" below). That is one research corpus of
 > children reading single words to a social robot — encouraging, and
 > the first child evidence this project has — but it is **not** a
 > clinical or educational validation, and accuracy on any given
@@ -41,17 +44,17 @@ frontier-model output in the training data. See PROVENANCE.md.
 
 ## Results (held-out test, speaker-disjoint, evaluated once)
 
-| Metric | v1 | v2 | v3 | v4 |
-|---|---|---|---|---|---|
-| Overall accuracy | 82.5% (6,012 clips) | 91.1% (6,413 clips) | 92.4% (6,413 clips) | **92.7%** (6,413 clips) |
-| Vocabulary-word accuracy | 82.7% | 91.0% | 92.3% | **92.5%** |
-| — Speech Commands clips | 83.0% | 91.8% | 93.3% | **93.5%** |
-| — LibriSpeech clips | 65.1% | 83.7% | 82.3% | **83.7%** |
-| False-accept, plain argmax (v1 definition) | 18.4% | 8.1% | 6.8% | **6.0%** |
-| False-accept with the decision rule | — (no rule) | 0.18% | 0.14% | **0.11%** |
-| True-accept with the decision rule | — | 90.2% | 91.7% | **91.8%** |
-| Words covered (of a 50-word list) | 26 | 40 | 40 | **40** |
-| Model size (int8 ONNX) | 60 KB | 62 KB | 62 KB | **62 KB** |
+| Metric | v1 | v2 | v3 | v4 | v5 |
+|---|---|---|---|---|---|---|
+| Overall accuracy | 82.5% (6,012 clips) | 91.1% (6,413 clips) | 92.4% (6,413 clips) | **92.7%** (6,413 clips) | 92.2% (6,413 clips) |
+| Vocabulary-word accuracy | 82.7% | 91.0% | 92.3% | **92.5%** | 92.1% |
+| — Speech Commands clips | 83.0% | 91.8% | 93.3% | **93.5%** | 93.2% |
+| — LibriSpeech clips | 65.1% | 83.7% | 82.3% | **83.7%** | 81.2% |
+| False-accept, plain argmax (v1 definition) | 18.4% | 8.1% | 6.8% | **6.0%** | 7.3% |
+| False-accept with the decision rule | — (no rule) | 0.18% | 0.14% | **0.11%** | 0.14% |
+| True-accept with the decision rule | — | 90.2% | 91.7% | **91.8%** | 91.5% |
+| Words covered (of a 50-word list) | 26 | 40 | 40 | **40** | **40** |
+| Model size (int8 ONNX) | 60 KB | 62 KB | 62 KB | **62 KB** | **64 KB** |
 
 False-accept = a clip that is *not* the target word being accepted as
 read correctly — the failure that matters most for a reading coach,
@@ -115,6 +118,35 @@ listing: commercial and noncommercial use with attribution.
 Children in the corpus are anonymized; no child audio is
 redistributed in this repo — only the trained model and aggregate
 scores.
+
+## Child evaluation — v5 update (2026-11-22)
+
+v5 changes exactly one thing versus v4: the 398 JIBO training
+clips are repeated **x40** instead of x20. The change came from a
+pre-registered sweep (six configurations: child-clip repetition
+x10/x20/x40, register-shifted child clips, and learning-rate
+halving/doubling) in which configurations were ranked **only** by
+child-grouped cross-validation inside the 53 training children —
+the frozen exam was scored exactly once, for the winning
+configuration, after the winner was frozen. The seed for the
+final training run was likewise chosen on cross-validation alone.
+
+| Child exam (int8, 384 clips, 53 held-out children) | v4 | v5 |
+|---|---|---|
+| Overall accuracy | 82.8% | **86.7%** |
+| True-accept with the decision rule | 82.0% | **85.2%** |
+| False-accept (all word pairs) | 0.31% | **0.26%** |
+| The word "a" (53 clips) | **90.6%** | 88.7% |
+
+The trade, disclosed plainly: v5's adult held-out accuracy is a
+little lower than v4's (92.2% vs 92.7% fp32; the LibriSpeech slice
+dips 83.7% -> 81.2%, and the plain-argmax false-accept on
+non-word clips rises 6.0% -> 7.3%, though the decision rule holds
+it to 0.14%). v5 is the default because the product's purpose is
+child reading and its child numbers are better on every headline
+measure; v4's files remain in this repo for comparison. Full
+numbers: `metrics_v5.json`. Child attribution: see the v4 section
+above (same corpus, same terms).
 
 ## How this compares
 
